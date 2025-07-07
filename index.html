@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Globalead</title>
+  <style>
+    .simulator-wrapper {
+      --blue: #79b2e9;
+      background: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      color: var(--blue);
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    .simulator-wrapper h2 {
+  text-align: center;
+  color:  #0d2233;
+  font-size: 2.9rem;
+  margin-bottom: 24px;
+}
+
+    .simulator-wrapper .step-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .simulator-wrapper .btn-back {
+      background: transparent;
+      border: none;
+      color: #0d2233;
+      font-size: 2rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .simulator-wrapper .btn-back:hover {
+      text-decoration: underline;
+    }
+
+    .simulator-wrapper .progress-bar {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .simulator-wrapper .progress-step {
+      font-size: 12px;
+      text-align: center;
+      width: 22%;
+    }
+
+    .simulator-wrapper .progress-step.active {
+      font-weight: 600;
+    }
+
+    .simulator-wrapper .progress-line {
+      position: absolute;
+      top: 35px;
+      left: 5%;
+      width: 90%;
+      height: 10px;
+      background: #d0e4fb;
+      border-radius: 10px;
+      z-index: 0;
+    }
+
+    .simulator-wrapper .progress-line span {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: var(--blue);
+      border-radius: 10px;
+      transition: width 0.3s ease;
+    }
+
+    .simulator-wrapper .question-step {
+      display: none;
+      text-align: center;
+    }
+
+    .simulator-wrapper .question-step.active {
+      display: block;
+    }
+
+    .simulator-wrapper .custom-btn {
+      border: 2px solid var(--blue);
+      color: var(--blue);
+      background: none;
+      padding: 15px 25px;
+      font-size: 18px;
+      border-radius: 50px;
+      width: 100%;
+      max-width: 400px;
+      margin: 10px auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .simulator-wrapper .custom-btn:hover {
+      background-color: #0d2233;
+      color: #fff;
+    }
+
+    .simulator-wrapper .arrow {
+      font-size: 20px;
+    }
+
+    .simulator-wrapper .form-field {
+      margin: 20px auto;
+      max-width: 400px;
+      text-align: left;
+    }
+
+    .simulator-wrapper .form-field label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+
+    .simulator-wrapper .form-field input,
+    .simulator-wrapper .form-field select {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 2px solid var(--blue);
+      border-radius: 10px;
+      outline: none;
+      background: #fff;
+      color: #000;
+    }
+
+    .simulator-wrapper .checkbox-field {
+      display: flex;
+      align-items: center;
+      margin: 10px auto;
+      max-width: 400px;
+    }
+
+    .simulator-wrapper .checkbox-field input[type="checkbox"] {
+      margin-right: 10px;
+    }
+
+    .simulator-wrapper .submit-btn {
+      background-color: var(--blue);
+      color: #fff;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 50px;
+      font-size: 18px;
+      cursor: pointer;
+      margin-top: 20px;
+      max-width: 400px;
+      width: 100%;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .simulator-wrapper .submit-btn:hover {
+      background-color: #5a9ad2;
+    }
+    
+
+    .simulator-wrapper #step11.active {
+  display: block;
+}
+
+.simulator-wrapper #step11 h2 {
+  color:  #0d2233;
+  font-size: 3rem;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.simulator-wrapper #step11 form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  
+}
+
+.simulator-wrapper #step11 label {
+   text-align: left;  
+  font-weight: 600;
+  color: #046C8B;
+  font-size: 14px;
+}
+
+.simulator-wrapper #step11 input,
+.simulator-wrapper #step11 select {
+  padding: 12px;
+  border: 1px solid #E5E5E5;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Arial', sans-serif;
+  background: #fff;
+  transition: border 0.2s;
+}
+
+.simulator-wrapper #step11 input:focus,
+.simulator-wrapper #step11 select:focus {
+  border-color:  var(--blue);
+  outline: none;
+}
+
+.simulator-wrapper #step11 .btn-continuar {
+  margin-top: 16px;
+  background: linear-gradient(90deg, #79B2E9, #79b2e9);
+  color: #fff;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.simulator-wrapper #step11 .btn-continuar:hover {
+  filter: brightness(1.1);
+}
+    @media (max-width: 600px) {
+      .simulator-wrapper {
+        padding: 20px 10px;
+      }
+      .custom-btn, .submit-btn {
+        font-size: 16px;
+        padding: 12px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="simulator-wrapper">
+
+    <div class="progress-bar">
+      <div class="progress-step active">SOBRE A<br><strong>INSTALAÇÃO</strong></div>
+      <div class="progress-step">MEDIDAS DE<br><strong>SEGURANÇA</strong></div>
+      <div class="progress-step">PREÇO DO<br><strong>ALARME</strong></div>
+      <div class="progress-step">REVISÃO<br><strong>FINAL</strong></div>
+      <div class="progress-line"><span></span></div>
+    </div>
+
+    <!-- Etapas -->
+    <div class="question-step active" id="step1">
+      <h2>O alarme é para casa ou empresa?</h2>
+      <button class="custom-btn" onclick="nextStep('Casa')">Casa <span class="arrow">➜</span></button>
+      <button class="custom-btn" onclick="nextStep('Empresa')">Empresa <span class="arrow">➜</span></button>
+    </div>
+
+    <div class="question-step" id="step2">
+      <div class="step-header">
+        <button class="btn-back" onclick="goBack()">← Voltar</button>
+      </div>
+      <h2>Qual o tipo de casa que tem?</h2>
+      <button class="custom-btn" onclick="nextStep('Apartamento')">Apartamento <span class="arrow">➜</span></button>
+      <button class="custom-btn" onclick="nextStep('Vivenda')">Vivenda <span class="arrow">➜</span></button>
+    </div>
+
+    <div class="question-step" id="step3">
+      <div class="step-header">
+        <button class="btn-back" onclick="goBack()">← Voltar</button>
+      </div>
+      <h2>É a sua residência principal ou secundária?</h2>
+      <button class="custom-btn" onclick="nextStep('Principal')">Principal <span class="arrow">➜</span></button>
+      <button class="custom-btn" onclick="nextStep('Secundária')">Secundária <span class="arrow">➜</span></button>
+    </div>
+
+    <div class="question-step" id="step4">
+      <div class="step-header">
+        <button class="btn-back" onclick="goBack()">← Voltar</button>
+      </div>
+      <h2>Em que zona se localiza a sua casa?</h2>
+      <button class="custom-btn" onclick="nextStep('Dentro da zona urbana')">Dentro da zona urbana <span class="arrow">➜</span></button>
+      <button class="custom-btn" onclick="nextStep('Fora da zona urbana')">Fora da zona urbana <span class="arrow">➜</span></button>
+    </div>
+
+    <div class="question-step" id="step5">
+      <div class="step-header">
+        <button class="btn-back" onclick="goBack()">← Voltar</button>
+      </div>
+      <h2>Como é o acesso principal da sua casa?</h2>
+      <button class="custom-btn" onclick="nextStep('Entrada direta através da rua')">Entrada através da rua <span class="arrow">➜</span></button>
+      <button class="custom-btn" onclick="nextStep('Condomínio sem vigilância')">Condomínio sem vigilância <span class="arrow">➜</span></button>
+      <button class="custom-btn" onclick="nextStep('Condomínio com vigilância')">Condomínio com vigilância <span class="arrow">➜</span></button>
+    </div>
+
+    <div class="question-step" id="step6">
+      <div class="step-header">
+        <button class="btn-back" onclick="goBack()">← Voltar</button>
+      </div>
+      <h2>A sua casa tem algum acesso secundário?</h2>
+      <button class="custom-btn" onclick="nextStep('Jardim ou terreno')">Jardim ou terreno <span class="arrow">➜</span></button>
+      <button class="custom-btn" onclick="nextStep('Varanda ou terraço')">Varanda/terraço <span class="arrow">➜</span></button>
+      <button class="custom-btn" onclick="nextStep('Não tem')">Não tem <span class="arrow">➜</span></button>
+    </div>
+
+    <div class="question-step" id="step7">
+      <div class="step-header">
+        <button class="btn-back" onclick="goBack()">← Voltar</button>
+      </div>
+      <h2>As janelas da sua habitação têm grades?</h2>
+      <button class="custom-btn" onclick="nextStep('Sim')">Sim <span class="arrow">➜</span></button>
+      <button class="custom-btn" onclick="nextStep('Não')">Não <span class="arrow">➜</span></button>
+    </div>
+
+    <div class="question-step" id="step8">
+      <div class="step-header">
+        <button class="btn-back" onclick="goBack()">← Voltar</button>
+      </div>
+      <h2>Qual o código postal da sua residência?</h2>
+      <div class="form-field">
+        <input type="text" id="cep" placeholder="Ex: 9999-999" maxlength="9" required />
+      </div>
+      <button class="submit-btn" onclick="nextStepWithCep()">Continuar <span class="arrow">➜</span></button>
+    </div>
+
+    <div class="question-step" id="step9">
+      <div class="step-header">
+        <button class="btn-back" onclick="goBack()">← Voltar</button>
+      </div>
+      <h2>Quanto tempo está a sua casa sem ninguém?</h2>
+      <button class="custom-btn" onclick="nextStep('Há sempre alguém')">Há sempre alguém <span class="arrow">➜</span></button>
+      <button class="custom-btn" onclick="nextStep('Menos de 2 horas')">Menos de 2 horas <span class="arrow">➜</span></button>
+      <button class="custom-btn" onclick="nextStep('2-5 horas')">2-5 horas <span class="arrow">➜</span></button>
+      <button class="custom-btn" onclick="nextStep('Mais de 5 horas')">Mais de 5 horas <span class="arrow">➜</span></button>
+    </div>
+
+    <div class="question-step" id="step10">
+      <div class="step-header">
+        <button class="btn-back" onclick="goBack()">← Voltar</button>
+      </div>
+      <h2>Já houve assalto na sua casa ou vizinhança?</h2>
+      <button class="custom-btn" onclick="nextStep('Sim')">Sim <span class="arrow">➜</span></button>
+      <button class="custom-btn" onclick="nextStep('Não')">Não <span class="arrow">➜</span></button>
+    </div>
+
+    <div class="question-step" id="step11">
+        
+        <div class="step-header">
+            <button class="btn-back" onclick="goBack()">← Voltar</button>
+        </div>
+        <h2>Preencha os dados para contato:</h2>
+<form id="finalForm" action="https://formsubmit.co/globaleadgroup@gmail.com" method="POST" target="_blank" onsubmit="return prepareFormSubmit(event)">
+
+  <input type="hidden" id="respostas" name="respostas">
+
+  <label>Nome:</label>
+  <input type="text" name="Nome" id="nome" required>
+
+  <label>Apelido:</label>
+  <input type="text" name="Apelido" id="apelido" required>
+
+  <label>Telemóvel:</label>
+  <input type="tel" name="Telemóvel" id="telefone" required>
+
+  <label>Email:</label>
+  <input type="email" name="Email" id="email" required>
+
+  <label>Meio de Contacto:</label>
+  <select name="Meio de Contacto" id="meio_contacto" required>
+    <option>Email</option>
+    <option>Telefone</option>
+  </select>
+
+  <label>Horário:</label>
+  <select name="Horário" id="horario_contacto" required>
+    <option>9h-12h30</option>
+    <option>12h30-16h</option>
+    <option>16h-19h:30</option>
+  </select>
+
+  <div class="checkbox-container">
+    <label for="privacidade">
+      Ao clicar em "Pedir Simulação", concorda com a
+      <a href="https://www.globalead.pt/politica-de-privacidade" target="_blank">Política de Privacidade</a>
+      da Globalead Portugal.
+    </label>
+  </div>
+
+  <button class="btn-continuar">Pedir Simulação</button>
+</form>
+
+        </div>
+        </div>
+  </div>
+
+  <script>
+let currentStep = 1;
+const totalSteps = 11;
+const answers = {};
+
+
+function nextStep(answer = null) {
+  if (answer !== null) answers['passo' + currentStep] = answer;
+  document.getElementById('step' + currentStep).classList.remove('active');
+  currentStep++;
+  if (currentStep <= totalSteps) {
+    document.getElementById('step' + currentStep).classList.add('active');
+    updateProgress();
+  }
+}
+
+
+function nextStepWithCep() {
+  const cep = document.getElementById('cep').value.trim();
+  if (!/^\d{4}-\d{3}$/.test(cep)) {
+    alert('Insira um CEP válido');
+    return;
+  }
+  answers['cep'] = cep;
+  nextStep();
+}
+
+
+function updateProgress() {
+  const pct = ((currentStep - 1) / (totalSteps - 1)) * 100;
+  document.querySelector('.progress-line span').style.width = pct + '%';
+  document.querySelectorAll('.progress-step').forEach((step, i) =>
+    step.classList.toggle('active', i < currentStep)
+  );
+}
+
+
+function goBack() {
+  if (currentStep > 1) {
+    document.getElementById('step' + currentStep).classList.remove('active');
+    currentStep--;
+    document.getElementById('step' + currentStep).classList.add('active');
+    updateProgress();
+  }
+}
+
+
+function prepareFormSubmit(event) {
+  event.preventDefault();
+
+  const camposObrigatorios = ['nome', 'apelido', 'telefone', 'email', 'meio_contacto', 'horario_contacto'];
+  for (const id of camposObrigatorios) {
+    const el = document.getElementById(id);
+    if (!el || !el.value.trim()) {
+      alert('Preencha todos os campos');
+      return false;
+    }
+  }
+
+
+  answers['nome'] = document.getElementById('nome').value.trim();
+  answers['apelido'] = document.getElementById('apelido').value.trim();
+  answers['telefone'] = document.getElementById('telefone').value.trim();
+  answers['email'] = document.getElementById('email').value.trim();
+  answers['meio_contacto'] = document.getElementById('meio_contacto').value;
+  answers['horario_contacto'] = document.getElementById('horario_contacto').value;
+  answers['privacidade'] = 'Sim';
+
+ 
+  document.getElementById('respostas').value = Object.entries(answers)
+    .map(([k, v]) => `${k}: ${v}`)
+    .join('\n');
+
+
+  document.getElementById('finalForm').submit();
+
+  return true; 
+}
+</script>
+</body>
+</html>
