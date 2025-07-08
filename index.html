@@ -3,710 +3,994 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Globalead</title>
+    <title>Simulador de Alarmes - GlobalEad</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
 
     <style>
+      /* Definindo variáveis globais */
       :root {
-        --font-base: "Inter", sans-serif;
-        --color-primary: #79b2e9;
-        --color-hover: #5a9ad2;
-        --color-dark: #0d2233;
-        --color-light: #d0e4fb;
-        --color-success: #4caf50;
-        --bg-gradient: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-        --transition: all 0.3s ease;
-        --radius-lg: 20px;
-        --radius-round: 50px;
-        --shadow-md: 0 8px 25px rgba(0, 0, 0, 0.1);
-        --progress: 0%;
+        --primary-color-start: #2563eb;
+        --primary-color-end: #1d4ed8;
+        --success-color: #10b981;
+        --error-color: #f43f5e;
+        --locked-opacity: 0.4;
+        --text-color-dark: #1a202c;
+        --text-color-light: #6b7280;
+        --bg-color-main: #f8fafc;
+        --bg-color-card: white;
+        --border-color-light: #e5e7eb;
+        --font-family-main: "Inter", sans-serif;
+        --header-height: 106px;
       }
-      *,
-      *::before,
-      *::after {
+
+      /* Reset e Configurações Globais */
+      * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
-      body {
-        font-family: var(--font-base);
-        background: var(--bg-gradient);
-        min-height: 100vh;
-        display: grid;
-        place-items: center;
-        padding: 20px;
-        color: var(--color-dark);
+      html {
+        scroll-behavior: smooth;
       }
-      .simulator-wrapper {
-        background: #fff;
-        border-radius: var(--radius-lg);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        border: 1px solid var(--color-light);
-        width: 100%;
-        max-width: 900px;
-        overflow: hidden;
+      body {
+        font-family: var(--font-family-main);
+        background: var(--bg-color-main);
+        color: var(--text-color-dark);
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: var(--bg-color-card);
+        min-height: 100vh;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
         position: relative;
       }
 
-      /* 1. Cabeçalho fixo com título e step info */
-      .sim-header {
+      /* Cabeçalho e Progresso (Sticky) */
+      .header {
         background: linear-gradient(
-          90deg,
-          var(--color-primary),
-          var(--color-hover)
+          135deg,
+          var(--primary-color-start),
+          var(--primary-color-end)
         );
-        padding: 1rem clamp(20px, 5vw, 40px);
-        color: #fff;
+        color: white;
+        padding: 30px 24px;
+        text-align: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      .header h1 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .header p {
+        font-size: 0.95rem;
+        opacity: 0.9;
+      }
+
+      .progress-container {
+        background: var(--bg-color-card);
+        padding: 16px 24px;
+        border-bottom: 1px solid var(--border-color-light);
+        position: sticky;
+        top: var(--header-height);
+        z-index: 99;
+      }
+      .progress-bar {
+        width: 100%;
+        height: 6px;
+        background: var(--border-color-light);
+        border-radius: 3px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color-start),
+          var(--primary-color-end)
+        );
+        border-radius: 3px;
+        transition: width 0.4s ease;
+        width: 0%;
+      }
+      .progress-text {
+        text-align: center;
+        margin-top: 8px;
+        font-size: 0.85rem;
+        color: var(--text-color-light);
+        font-weight: 500;
+      }
+
+      /* Estilos do Formulário e Etapas */
+      .form-container {
+        padding: 24px;
+      }
+      .step {
+        margin-bottom: 48px;
+        padding: 24px;
+        border: 1px solid var(--border-color-light);
+        border-radius: 12px;
+        background: var(--bg-color-card);
+        transition: opacity 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+      }
+
+      /* Estado "Bloqueado" para etapas futuras */
+      .step.locked {
+        opacity: var(--locked-opacity);
+        pointer-events: none;
+      }
+
+      /* Estado "Ativo" para a etapa atual */
+      .step.active {
+        opacity: 1;
+        border-color: var(--primary-color-start);
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.1);
+      }
+
+      .step-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+        border-bottom: 2px solid #f3f4f6;
+      }
+      .step-number {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        background: var(--primary-color-start);
+        color: white;
+        border-radius: 50%;
+        font-size: 14px;
+        font-weight: 600;
+        margin-right: 16px;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+      }
+      .step-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1f2937;
+      }
+
+      /* Estado "Completo" para etapas preenchidas */
+      .step.completed .step-number {
+        background-color: var(--success-color);
+      }
+      .step.completed .step-number::after {
+        content: "✓";
+        font-weight: bold;
+      }
+
+      .options-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .option-item {
+        border: 2px solid var(--border-color-light);
+        border-radius: 8px;
+        padding: 16px 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+      .option-item:hover {
+        border-color: var(--primary-color-start);
+        background: #f8fafc;
+      }
+      .option-item input[type="radio"] {
+        display: none;
+      }
+      .option-item:has(input[type="radio"]:checked) {
+        border-color: var(--primary-color-start);
+        background: #eff6ff;
+      }
+      .option-item:has(input[type="radio"]:checked)::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: var(--primary-color-start);
+        border-radius: 0 4px 4px 0;
+      }
+      .option-content {
         display: flex;
         align-items: center;
         justify-content: space-between;
       }
-      .sim-header h1 {
-        font-size: clamp(1.4rem, 2vw, 1.8rem);
-        font-weight: 600;
-      }
-      .step-info {
+      .option-text {
         font-size: 1rem;
         font-weight: 500;
-        opacity: 0.9;
+        color: #374151;
       }
-
-      /* 2. Barra de progresso aprimorada */
-      .progress-container {
-        background: #f9fafc;
-        padding: 1rem clamp(20px, 5vw, 40px);
-        position: sticky;
-        top: 0;
-        z-index: 10;
-      }
-      .progress-bar {
-        position: relative;
-        display: flex;
-        justify-content: space-between;
-        max-width: 800px;
-        margin: 0 auto;
-      }
-      .progress-line {
-        position: absolute;
-        top: 1.1rem;
-        left: 5%;
-        width: 90%;
-        height: 4px;
-        background: #e0e0e0;
-        border-radius: 2px;
-        z-index: 0;
-      }
-      .progress-line span {
-        display: block;
-        width: var(--progress);
-        height: 100%;
-        background: var(--color-primary);
-        border-radius: inherit;
-        transition: width 0.4s ease;
-      }
-      .progress-step {
-        flex: 1;
-        position: relative;
-        text-align: center;
-        padding-top: 1.8rem;
-        font-size: 0.85rem;
-        color: #666;
-        z-index: 1;
-        transition: var(--transition);
-      }
-      .progress-step::before {
-        content: attr(data-step);
-        position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 2rem;
-        height: 2rem;
-        background: #e0e0e0;
+      .check-icon {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #d1d5db;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-weight: 500;
-        color: #333;
-        transition: var(--transition);
+        transition: all 0.3s ease;
       }
-      .progress-step span {
-        display: block;
-        margin-top: 0.5rem;
-        line-height: 1.2;
+      .option-item:has(input[type="radio"]:checked) .check-icon {
+        border-color: var(--primary-color-start);
+        background: var(--primary-color-start);
+        color: white;
       }
-      .progress-step.active {
-        color: var(--color-dark);
-        font-weight: 600;
-      }
-      .progress-step.active::before {
-        background: linear-gradient(
-          135deg,
-          var(--color-primary),
-          var(--color-hover)
-        );
-        color: #fff;
-        transform: translateX(-50%) scale(1.1);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      }
-      .progress-step.completed {
-        color: var(--color-success);
-      }
-      .progress-step.completed::before {
-        content: "✔";
-        background: var(--color-success);
-        color: #fff;
+      .option-item:has(input[type="radio"]:checked) .check-icon::before {
+        content: "✓";
+        font-size: 12px;
+        font-weight: bold;
       }
 
-      /* 3. Área de conteúdo */
-      .question-step {
-        display: none;
-        padding: 2rem clamp(20px, 5vw, 40px);
-        animation: fadeIn 0.4s ease-in-out;
+      .form-section {
+        margin-top: 16px;
       }
-      .question-step.active {
-        display: block;
-      }
-      .question-step h2 {
-        font-size: clamp(1.4rem, 2vw, 2rem);
-        margin-bottom: 1.5rem;
-        line-height: 1.3;
-        color: var(--color-dark);
-      }
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(15px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      /* 4. Grid de opções (radio-friendly) */
-      .options-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 1rem;
-        margin-bottom: 2rem;
-      }
-      .option-card {
-        border: 2px solid var(--color-light);
-        border-radius: var(--radius-round);
-        padding: 12px 16px;
-        text-align: center;
-        cursor: pointer;
-        transition: var(--transition);
-        user-select: none;
-        position: relative;
-      }
-      .option-card input {
-        position: absolute;
-        opacity: 0;
-        pointer-events: none;
-      }
-      .option-card:hover {
-        border-color: var(--color-primary);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-      }
-      .option-card.selected {
-        border-color: var(--color-primary);
-        background: rgba(121, 178, 233, 0.1);
-      }
-
-      /* 5. Navegação (Back / Next) */
-      .nav-buttons {
-        display: flex;
-        justify-content: space-between;
-        padding: 0 clamp(20px, 5vw, 40px) 2rem;
-      }
-      .btn-back,
-      .btn-next {
-        padding: 12px 24px;
-        font-size: 1rem;
-        border-radius: var(--radius-round);
-        border: none;
-        cursor: pointer;
-        transition: var(--transition);
-      }
-      .btn-back {
-        background: transparent;
-        color: var(--color-dark);
-        border: 2px solid var(--color-light);
-      }
-      .btn-back:hover {
-        background: var(--color-light);
-      }
-      .btn-next {
-        background: var(--color-primary);
-        color: #fff;
-        opacity: 0.5;
-        pointer-events: none;
-      }
-      .btn-next.enabled {
-        opacity: 1;
-        pointer-events: auto;
-      }
-
-      /* 6. Campos de formulário e validação */
       .form-field {
-        max-width: 450px;
-        margin: 0 auto 1.5rem;
+        margin-bottom: 16px;
+        position: relative;
       }
       .form-field label {
         display: block;
         margin-bottom: 6px;
         font-weight: 500;
+        color: #374151;
+        font-size: 0.95rem;
       }
       .form-field input,
       .form-field select {
         width: 100%;
         padding: 12px 16px;
-        border: 2px solid var(--color-light);
-        border-radius: 12px;
-        transition: var(--transition);
+        border: 2px solid var(--border-color-light);
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: var(--bg-color-card);
       }
-      .form-field input:focus,
-      .form-field select:focus {
-        border-color: var(--color-primary);
-        box-shadow: 0 0 0 3px rgba(121, 178, 233, 0.1);
+      .form-field input:focus-visible,
+      .form-field select:focus-visible {
+        outline: none;
+        border-color: var(--primary-color-start);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
       }
-      .error-msg {
-        color: #d9534f;
-        font-size: 0.9rem;
-        margin-top: 4px;
-        display: none;
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
       }
 
-      /* 7. Checkbox final */
-      .checkbox-container {
-        max-width: 450px;
-        margin: 0 auto 1.5rem;
-        font-size: 0.9rem;
+      /* Botão de Envio e Mensagens de Feedback */
+      .submit-section {
+        padding: 20px 24px;
+        border-top: 1px solid var(--border-color-light);
       }
-      .checkbox-container input {
-        margin-right: 8px;
+      .submit-btn {
+        width: 100%;
+        padding: 16px;
+        font-size: 1rem;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color-start),
+          var(--primary-color-end)
+        );
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
       }
-      .checkbox-container a {
-        color: var(--color-primary);
-        text-decoration: none;
-        font-weight: 500;
+      .submit-btn:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
       }
-      .checkbox-container a:hover {
-        text-decoration: underline;
+      .submit-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .loading-state,
+      .success-message,
+      .error-message {
+        display: none;
+        text-align: center;
+        padding: 40px 20px;
+      }
+      .spinner {
+        width: 32px;
+        height: 32px;
+        border: 3px solid var(--border-color-light);
+        border-top: 3px solid var(--primary-color-start);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 16px;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .success-message,
+      .error-message {
+        animation: fadeIn 0.5s;
+      }
+      .success-message {
+        color: #065f46;
+      }
+      .error-message {
+        color: #9f1239;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="simulator-wrapper">
-      <!-- Cabeçalho com título e passo -->
-      <div class="sim-header">
+    <div class="container">
+      <header class="header">
         <h1>Simulador de Alarmes</h1>
-        <div class="step-info">
-          Passo <span id="current-step">1</span> de 11
-        </div>
-      </div>
+        <p>Encontre a solução de segurança ideal para você</p>
+      </header>
 
-      <!-- Barra de progresso -->
       <div class="progress-container">
         <div class="progress-bar">
-          <div class="progress-line"><span></span></div>
-          <div class="progress-step active" data-step="1">
-            <span>SOBRE A INSTALAÇÃO</span>
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text" id="progressText"></div>
+      </div>
+
+      <div class="form-container" id="formContainer">
+        <div class="success-message" id="successMessage">
+          ✅<br />Formulário enviado com sucesso! Entraremos em contato em
+          breve.
+        </div>
+        <div class="error-message" id="errorMessage">
+          ❌<br />Ocorreu um erro ao enviar. Por favor, tente novamente.
+        </div>
+        <div class="loading-state" id="loadingState">
+          <div class="spinner"></div>
+          <p>Enviando suas informações...</p>
+        </div>
+
+        <form id="alarmForm" novalidate>
+          <!-- Os campos ocultos para o formsubmit.co permanecem -->
+          <input
+            type="hidden"
+            name="_subject"
+            value="Nova solicitação - Simulador de Alarmes"
+          />
+          <input type="hidden" name="_captcha" value="false" />
+
+          <!-- Os 'steps' agora são seções de uma lista -->
+          <div class="step" data-step="1">
+            <div class="step-header">
+              <div class="step-number">1</div>
+              <div class="step-title">O alarme é para casa ou empresa?</div>
+            </div>
+            <div class="options-list">
+              <label class="option-item"
+                ><input type="radio" name="tipo_imovel" value="Casa" required />
+                <div class="option-content">
+                  <span class="option-text">Casa</span>
+                  <div class="check-icon"></div></div
+              ></label>
+              <label class="option-item"
+                ><input
+                  type="radio"
+                  name="tipo_imovel"
+                  value="Empresa"
+                  required />
+                <div class="option-content">
+                  <span class="option-text">Empresa</span>
+                  <div class="check-icon"></div></div
+              ></label>
+            </div>
           </div>
-          <div class="progress-step" data-step="2">
-            <span>MEDIDAS DE SEGURANÇA</span>
+
+          <div class="step" data-step="2">
+            <div class="step-header">
+              <div class="step-number">2</div>
+              <div class="step-title">Qual o tipo de propriedade?</div>
+            </div>
+            <div class="options-list">
+              <label class="option-item"
+                ><input
+                  type="radio"
+                  name="subtipo_imovel"
+                  value="Apartamento"
+                  required />
+                <div class="option-content">
+                  <span class="option-text">Apartamento</span>
+                  <div class="check-icon"></div></div
+              ></label>
+              <label class="option-item"
+                ><input
+                  type="radio"
+                  name="subtipo_imovel"
+                  value="Vivenda"
+                  required />
+                <div class="option-content">
+                  <span class="option-text">Vivenda</span>
+                  <div class="check-icon"></div></div
+              ></label>
+              <label class="option-item"
+                ><input
+                  type="radio"
+                  name="subtipo_imovel"
+                  value="Condomínio"
+                  required />
+                <div class="option-content">
+                  <span class="option-text">Condomínio</span>
+                  <div class="check-icon"></div></div
+              ></label>
+            </div>
           </div>
-          <div class="progress-step" data-step="3">
-            <span>PREÇO DO ALARME</span>
+
+          <!-- Repita o padrão para todas as outras etapas -->
+          <div class="step" data-step="3">
+            <div class="step-header">
+              <div class="step-number">3</div>
+              <div class="step-title">Residência principal ou secundária?</div>
+            </div>
+            <div class="options-list">
+              <label class="option-item"
+                ><input
+                  type="radio"
+                  name="uso_residencia"
+                  value="Principal"
+                  required />
+                <div class="option-content">
+                  <span class="option-text">Principal</span>
+                  <div class="check-icon"></div></div
+              ></label>
+              <label class="option-item"
+                ><input
+                  type="radio"
+                  name="uso_residencia"
+                  value="Secundária"
+                  required />
+                <div class="option-content">
+                  <span class="option-text">Secundária</span>
+                  <div class="check-icon"></div></div
+              ></label>
+            </div>
           </div>
-          <div class="progress-step" data-step="4">
-            <span>REVISÃO FINAL</span>
+
+          <div class="step" data-step="4">
+            <div class="step-header">
+              <div class="step-number">4</div>
+              <div class="step-title">Localização da propriedade</div>
+            </div>
+            <div class="options-list">
+              <label class="option-item"
+                ><input
+                  type="radio"
+                  name="localizacao"
+                  value="Urbana"
+                  required />
+                <div class="option-content">
+                  <span class="option-text">Zona Urbana</span>
+                  <div class="check-icon"></div></div
+              ></label>
+              <label class="option-item"
+                ><input
+                  type="radio"
+                  name="localizacao"
+                  value="Rural"
+                  required />
+                <div class="option-content">
+                  <span class="option-text">Zona Rural</span>
+                  <div class="check-icon"></div></div
+              ></label>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <!-- Etapas -->
-      <!-- Step 1 -->
-      <div class="question-step active" id="step1">
-        <h2>O alarme é para casa ou empresa?</h2>
-        <div class="options-grid">
-          <label class="option-card">
-            <input type="radio" name="step1" value="Casa" />
-            Casa
-          </label>
-          <label class="option-card">
-            <input type="radio" name="step1" value="Empresa" />
-            Empresa
-          </label>
-        </div>
-      </div>
-
-      <!-- Step 2 -->
-      <div class="question-step" id="step2">
-        <h2>Qual o tipo de casa que tem?</h2>
-        <div class="options-grid">
-          <label class="option-card"
-            ><input
-              type="radio"
-              name="step2"
-              value="Apartamento"
-            />Apartamento</label
-          >
-          <label class="option-card"
-            ><input type="radio" name="step2" value="Vivenda" />Vivenda</label
-          >
-        </div>
-      </div>
-
-      <!-- Step 3 -->
-      <div class="question-step" id="step3">
-        <h2>Residência principal ou secundária?</h2>
-        <div class="options-grid">
-          <label class="option-card"
-            ><input
-              type="radio"
-              name="step3"
-              value="Principal"
-            />Principal</label
-          >
-          <label class="option-card"
-            ><input
-              type="radio"
-              name="step3"
-              value="Secundária"
-            />Secundária</label
-          >
-        </div>
-      </div>
-
-      <!-- Step 4 -->
-      <div class="question-step" id="step4">
-        <h2>Em que zona se localiza a sua casa?</h2>
-        <div class="options-grid">
-          <label class="option-card"
-            ><input
-              type="radio"
-              name="step4"
-              value="Dentro da zona urbana"
-            />Dentro da zona urbana</label
-          >
-          <label class="option-card"
-            ><input type="radio" name="step4" value="Fora da zona urbana" />Fora
-            da zona urbana</label
-          >
-        </div>
-      </div>
-
-      <!-- Step 5 -->
-      <div class="question-step" id="step5">
-        <h2>Acesso principal da sua casa?</h2>
-        <div class="options-grid">
-          <label class="option-card"
-            ><input
-              type="radio"
-              name="step5"
-              value="Entrada direta através da rua"
-            />Entrada direta pela rua</label
-          >
-          <label class="option-card"
-            ><input
-              type="radio"
-              name="step5"
-              value="Condomínio sem vigilância"
-            />Condomínio sem vigilância</label
-          >
-          <label class="option-card"
-            ><input
-              type="radio"
-              name="step5"
-              value="Condomínio com vigilância"
-            />Condomínio com vigilância</label
-          >
-        </div>
-      </div>
-
-      <!-- Step 6 -->
-      <div class="question-step" id="step6">
-        <h2>Acesso secundário?</h2>
-        <div class="options-grid">
-          <label class="option-card"
-            ><input type="radio" name="step6" value="Jardim ou terreno" />Jardim
-            ou terreno</label
-          >
-          <label class="option-card"
-            ><input
-              type="radio"
-              name="step6"
-              value="Varanda ou terraço"
-            />Varanda/terraço</label
-          >
-          <label class="option-card"
-            ><input type="radio" name="step6" value="Não tem" />Não tem</label
-          >
-        </div>
-      </div>
-
-      <!-- Step 7 -->
-      <div class="question-step" id="step7">
-        <h2>Janelas têm grades?</h2>
-        <div class="options-grid">
-          <label class="option-card"
-            ><input type="radio" name="step7" value="Sim" />Sim</label
-          >
-          <label class="option-card"
-            ><input type="radio" name="step7" value="Não" />Não</label
-          >
-        </div>
-      </div>
-
-      <!-- Step 8 -->
-      <div class="question-step" id="step8">
-        <h2>Código postal da residência</h2>
-        <div class="form-field">
-          <label for="cep">CEP</label>
-          <input type="text" id="cep" placeholder="9999-999" maxlength="9" />
-          <div class="error-msg" id="cep-error">Formato inválido</div>
-        </div>
-      </div>
-
-      <!-- Step 9 -->
-      <div class="question-step" id="step9">
-        <h2>Quanto tempo sem ninguém?</h2>
-        <div class="options-grid">
-          <label class="option-card"
-            ><input type="radio" name="step9" value="Há sempre alguém" />Há
-            sempre alguém</label
-          >
-          <label class="option-card"
-            ><input type="radio" name="step9" value="Menos de 2 horas" />Menos
-            de 2 horas</label
-          >
-          <label class="option-card"
-            ><input type="radio" name="step9" value="2-5 horas" />2-5
-            horas</label
-          >
-          <label class="option-card"
-            ><input type="radio" name="step9" value="Mais de 5 horas" />Mais de
-            5 horas</label
-          >
-        </div>
-      </div>
-
-      <!-- Step 10 -->
-      <div class="question-step" id="step10">
-        <h2>Já houve assalto?</h2>
-        <div class="options-grid">
-          <label class="option-card"
-            ><input type="radio" name="step10" value="Sim" />Sim</label
-          >
-          <label class="option-card"
-            ><input type="radio" name="step10" value="Não" />Não</label
-          >
-        </div>
-      </div>
-
-      <!-- Step 11 -->
-      <div class="question-step" id="step11">
-        <h2>Dados para contato</h2>
-        <form
-          id="finalForm"
-          action="https://formsubmit.co/globaleadgroup@gmail.com"
-          method="POST"
-          target="_blank"
-        >
-          <input type="hidden" id="respostas" name="respostas" />
-          <div class="form-field">
-            <label for="nome">Nome</label><input id="nome" required />
+          <div class="step" data-step="5">
+            <div class="step-header">
+              <div class="step-number">5</div>
+              <div class="step-title">Acesso principal</div>
+            </div>
+            <div class="options-list">
+              <label class="option-item"
+                ><input
+                  type="radio"
+                  name="acesso_principal"
+                  value="Rua"
+                  required />
+                <div class="option-content">
+                  <span class="option-text">Direto da rua</span>
+                  <div class="check-icon"></div></div
+              ></label>
+              <label class="option-item"
+                ><input
+                  type="radio"
+                  name="acesso_principal"
+                  value="Sem vigilância"
+                  required />
+                <div class="option-content">
+                  <span class="option-text">Sem vigilância</span>
+                  <div class="check-icon"></div></div
+              ></label>
+              <label class="option-item"
+                ><input
+                  type="radio"
+                  name="acesso_principal"
+                  value="Com vigilância"
+                  required />
+                <div class="option-content">
+                  <span class="option-text">Com vigilância</span>
+                  <div class="check-icon"></div></div
+              ></label>
+            </div>
           </div>
-          <div class="form-field">
-            <label for="apelido">Apelido</label><input id="apelido" required />
+
+          <div class="step" data-step="6">
+            <div class="step-header">
+              <div class="step-number">6</div>
+              <div class="step-title">Acesso secundário</div>
+            </div>
+            <div class="options-list">
+              <label class="option-item"
+                ><input
+                  type="radio"
+                  name="acesso_secundario"
+                  value="Jardim"
+                  required />
+                <div class="option-content">
+                  <span class="option-text">Jardim</span>
+                  <div class="check-icon"></div></div
+              ></label>
+              <label class="option-item"
+                ><input
+                  type="radio"
+                  name="acesso_secundario"
+                  value="Varanda"
+                  required />
+                <div class="option-content">
+                  <span class="option-text">Varanda</span>
+                  <div class="check-icon"></div></div
+              ></label>
+              <label class="option-item"
+                ><input
+                  type="radio"
+                  name="acesso_secundario"
+                  value="Não tem"
+                  required />
+                <div class="option-content">
+                  <span class="option-text">Não tem</span>
+                  <div class="check-icon"></div></div
+              ></label>
+            </div>
           </div>
-          <div class="form-field">
-            <label for="telefone">Telemóvel</label
-            ><input id="telefone" required />
+
+          <div class="step" data-step="7">
+            <div class="step-header">
+              <div class="step-number">7</div>
+              <div class="step-title">As janelas possuem grades?</div>
+            </div>
+            <div class="options-list">
+              <label class="option-item"
+                ><input
+                  type="radio"
+                  name="janelas_com_grades"
+                  value="Sim"
+                  required />
+                <div class="option-content">
+                  <span class="option-text">Sim</span>
+                  <div class="check-icon"></div></div
+              ></label>
+              <label class="option-item"
+                ><input
+                  type="radio"
+                  name="janelas_com_grades"
+                  value="Não"
+                  required />
+                <div class="option-content">
+                  <span class="option-text">Não</span>
+                  <div class="check-icon"></div></div
+              ></label>
+              <label class="option-item"
+                ><input
+                  type="radio"
+                  name="janelas_com_grades"
+                  value="Algumas"
+                  required />
+                <div class="option-content">
+                  <span class="option-text">Algumas</span>
+                  <div class="check-icon"></div></div
+              ></label>
+            </div>
           </div>
-          <div class="form-field">
-            <label for="email">Email</label
-            ><input id="email" type="email" required />
+
+          <div class="step" data-step="8">
+            <div class="step-header">
+              <div class="step-number">8</div>
+              <div class="step-title">Código postal da residência</div>
+            </div>
+            <div class="form-section">
+              <div class="form-field">
+                <label for="cep">Código Postal *</label>
+                <input
+                  type="text"
+                  id="cep"
+                  name="cep"
+                  placeholder="0000-000"
+                  maxlength="8"
+                  required
+                />
+              </div>
+            </div>
           </div>
-          <div class="form-field">
-            <label for="meio_contacto">Meio de Contacto</label>
-            <select id="meio_contacto" required>
-              <option value="">Selecione</option>
-              <option>Email</option>
-              <option>Telefone</option>
-            </select>
+
+          <div class="step" data-step="9">
+            <div class="step-header">
+              <div class="step-number">9</div>
+              <div class="step-title">Quanto tempo a casa fica vazia?</div>
+            </div>
+            <div class="options-list">
+              <label class="option-item"
+                ><input
+                  type="radio"
+                  name="tempo_casa_vazia"
+                  value="Sempre tem alguém"
+                  required />
+                <div class="option-content">
+                  <span class="option-text">Sempre tem alguém</span>
+                  <div class="check-icon"></div></div
+              ></label>
+              <label class="option-item"
+                ><input
+                  type="radio"
+                  name="tempo_casa_vazia"
+                  value="Menos de 2h"
+                  required />
+                <div class="option-content">
+                  <span class="option-text">Menos de 2 horas</span>
+                  <div class="check-icon"></div></div
+              ></label>
+              <label class="option-item"
+                ><input
+                  type="radio"
+                  name="tempo_casa_vazia"
+                  value="2-5h"
+                  required />
+                <div class="option-content">
+                  <span class="option-text">2 a 5 horas</span>
+                  <div class="check-icon"></div></div
+              ></label>
+              <label class="option-item"
+                ><input
+                  type="radio"
+                  name="tempo_casa_vazia"
+                  value="Mais de 5h"
+                  required />
+                <div class="option-content">
+                  <span class="option-text">Mais de 5 horas</span>
+                  <div class="check-icon"></div></div
+              ></label>
+            </div>
           </div>
-          <div class="form-field">
-            <label for="horario_contacto">Horário</label>
-            <select id="horario_contacto" required>
-              <option value="">Selecione</option>
-              <option>9h–12h30</option>
-              <option>12h30–16h</option>
-              <option>16h–19h30</option>
-            </select>
+
+          <div class="step" data-step="10">
+            <div class="step-header">
+              <div class="step-number">10</div>
+              <div class="step-title">
+                Já houve algum incidente de segurança?
+              </div>
+            </div>
+            <div class="options-list">
+              <label class="option-item"
+                ><input
+                  type="radio"
+                  name="historico_incidente"
+                  value="Sim"
+                  required />
+                <div class="option-content">
+                  <span class="option-text">Sim</span>
+                  <div class="check-icon"></div></div
+              ></label>
+              <label class="option-item"
+                ><input
+                  type="radio"
+                  name="historico_incidente"
+                  value="Não"
+                  required />
+                <div class="option-content">
+                  <span class="option-text">Não</span>
+                  <div class="check-icon"></div></div
+              ></label>
+              <label class="option-item"
+                ><input
+                  type="radio"
+                  name="historico_incidente"
+                  value="Na vizinhança"
+                  required />
+                <div class="option-content">
+                  <span class="option-text">Na vizinhança</span>
+                  <div class="check-icon"></div></div
+              ></label>
+            </div>
           </div>
-          <div class="checkbox-container">
-            <label
-              ><input type="checkbox" id="privacidade" required /> Concordo com
-              a
-              <a
-                href="https://www.globalead.pt/politica-de-privacidade"
-                target="_blank"
-                >Política de Privacidade</a
-              ></label
-            >
+
+          <div class="step" data-step="11">
+            <div class="step-header">
+              <div class="step-number">11</div>
+              <div class="step-title">Dados para contato</div>
+            </div>
+            <div class="form-section">
+              <div class="form-grid">
+                <div class="form-field">
+                  <label for="nome">Nome *</label
+                  ><input type="text" id="nome" name="nome" required />
+                </div>
+                <div class="form-field">
+                  <label for="apelido">Sobrenome *</label
+                  ><input type="text" id="apelido" name="apelido" required />
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="form-field">
+                  <label for="telefone">Telefone *</label
+                  ><input
+                    type="tel"
+                    id="telefone"
+                    name="telefone"
+                    placeholder="912 345 678"
+                    required
+                  />
+                </div>
+                <div class="form-field">
+                  <label for="email">Email *</label
+                  ><input type="email" id="email" name="email" required />
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="form-field">
+                  <label for="meio_contacto">Meio de contato preferido *</label
+                  ><select id="meio_contacto" name="meio_contacto" required>
+                    <option value="">Selecione</option>
+                    <option value="Email">Email</option>
+                    <option value="Telefone">Telefone</option>
+                    <option value="WhatsApp">WhatsApp</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label for="horario_contacto">Horário de contato *</label
+                  ><select
+                    id="horario_contacto"
+                    name="horario_contacto"
+                    required
+                  >
+                    <option value="">Selecione</option>
+                    <option value="9h–12h30">9h às 12h30</option>
+                    <option value="12h30–16h">12h30 às 16h</option>
+                    <option value="16h–19h30">16h às 19h30</option>
+                    <option value="Qualquer horário">Qualquer horário</option>
+                  </select>
+                </div>
+              </div>
+            </div>
           </div>
         </form>
       </div>
 
-      <!-- Botões de navegação -->
-      <div class="nav-buttons">
-        <button class="btn-back" id="btn-back">← Voltar</button>
-        <button class="btn-next" id="btn-next">Próximo →</button>
+      <div class="submit-section" id="submitSection">
+        <button
+          type="submit"
+          form="alarmForm"
+          class="submit-btn"
+          id="submitBtn"
+          disabled
+        >
+          Solicitar Orçamento
+        </button>
       </div>
     </div>
 
     <script>
-      const totalSteps = 11;
-      let current = 1;
-      const answers = {};
+      document.addEventListener("DOMContentLoaded", () => {
+        // --- ELEMENTOS DO DOM ---
+        const form = document.getElementById("alarmForm");
+        const steps = Array.from(form.querySelectorAll(".step"));
+        const submitBtn = document.getElementById("submitBtn");
+        const progressFill = document.getElementById("progressFill");
+        const progressText = document.getElementById("progressText");
+        const formContainer = document.getElementById("formContainer");
+        const loadingState = document.getElementById("loadingState");
+        const successMessage = document.getElementById("successMessage");
+        const errorMessage = document.getElementById("errorMessage");
+        const submitSection = document.getElementById("submitSection");
 
-      const updateInterface = () => {
-        // steps visibility
-        document.querySelectorAll(".question-step").forEach((el, i) => {
-          el.classList.toggle("active", i + 1 === current);
-        });
-        // header
-        document.getElementById("current-step").textContent = current;
-        // progress
-        const section = current <= 7 ? 1 : current <= 10 ? 2 : 4;
-        document.querySelectorAll(".progress-step").forEach((el, i) => {
-          el.classList.toggle("completed", i < section - 1);
-          el.classList.toggle("active", i === section - 1);
-        });
-        document.documentElement.style.setProperty(
-          "--progress",
-          ((section - 1) / (4 - 1)) * 100 + "%"
-        );
-        // nav buttons
-        document.getElementById("btn-back").style.visibility =
-          current === 1 ? "hidden" : "visible";
-        // enable Next?
-        let ok = false;
-        if (current < 11) {
-          if (current === 8) {
-            // CEP step
-            const v = document.getElementById("cep").value.trim();
-            ok = /^\d{4}-\d{3}$/.test(v);
-            document.getElementById("cep-error").style.display = ok
-              ? "none"
-              : "block";
-          } else {
-            ok = !!document.querySelector(
-              `input[name="step${current}"]:checked`
-            );
-          }
-        } else {
-          // on final step, all fields required
-          ok = [
-            "nome",
-            "apelido",
-            "telefone",
-            "email",
-            "meio_contacto",
-            "horario_contacto",
-            "privacidade",
-          ].every((id) => {
-            const el = document.getElementById(id);
-            return (el && el.value?.trim()) || el.checked;
+        // --- ESTADO E CONFIGURAÇÕES ---
+        const totalSteps = steps.length;
+        const FORM_SUBMIT_URL =
+          "https://formsubmit.co/globaleadgroup@gmail.com";
+        const REDIRECT_URL = "https://www.globalead.pt/obrigado";
+        let scrollTimeout;
+
+        // --- FUNÇÕES ---
+
+        /**
+         * Verifica se uma etapa específica está completa.
+         * @param {HTMLElement} stepElement - O elemento da etapa.
+         * @returns {boolean} - True se todos os campos obrigatórios estiverem preenchidos.
+         */
+        const isStepComplete = (stepElement) => {
+          const inputs = Array.from(stepElement.querySelectorAll("[required]"));
+          return inputs.every((input) => {
+            if (input.type === "radio") {
+              const radioGroup = stepElement.querySelectorAll(
+                `input[name="${input.name}"]`
+              );
+              return Array.from(radioGroup).some((radio) => radio.checked);
+            }
+            if (input.type === "checkbox") return input.checked;
+            return input.value.trim() !== "";
           });
-        }
-        const btnNext = document.getElementById("btn-next");
-        btnNext.classList.toggle("enabled", ok);
-        btnNext.textContent = current < 11 ? "Próximo →" : "Enviar";
-      };
+        };
 
-      document.querySelectorAll(".option-card input").forEach((i) => {
-        i.addEventListener("change", () => {
-          // mark selected
-          const group = i.name;
-          document
-            .querySelectorAll(`.option-card input[name="${group}"]`)
-            .forEach((inp) => {
-              inp.parentElement.classList.toggle("selected", inp.checked);
-            });
-          updateInterface();
-        });
-      });
+        /**
+         * Atualiza a UI (bloqueio/desbloqueio, progresso, botão de envio).
+         */
+        const updateFormState = () => {
+          let completedStepsCount = 0;
+          let firstActiveStep = null;
 
-      [
-        "cep",
-        "nome",
-        "apelido",
-        "telefone",
-        "email",
-        "meio_contacto",
-        "horario_contacto",
-        "privacidade",
-      ].forEach((id) => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.addEventListener("input", updateInterface);
-        el.addEventListener("change", updateInterface);
-      });
+          steps.forEach((step, index) => {
+            const isComplete = isStepComplete(step);
+            const isLocked = index > 0 && !isStepComplete(steps[index - 1]);
 
-      document.getElementById("btn-back").addEventListener("click", () => {
-        if (current > 1) current--, updateInterface();
-      });
-      document.getElementById("btn-next").addEventListener("click", () => {
-        if (!document.getElementById("btn-next").classList.contains("enabled"))
-          return;
-        if (current < 11) {
-          // save answer
-          if (current === 8) {
-            answers["cep"] = document.getElementById("cep").value.trim();
-          } else {
-            const sel = document.querySelector(
-              `input[name="step${current}"]:checked`
-            );
-            answers["passo" + current] = sel.value;
+            step.classList.toggle("completed", isComplete);
+            step.classList.toggle("locked", isLocked);
+            step.classList.remove("active");
+
+            if (isComplete) {
+              completedStepsCount++;
+            }
+
+            if (!isLocked && !firstActiveStep) {
+              firstActiveStep = step;
+            }
+          });
+
+          if (firstActiveStep) {
+            firstActiveStep.classList.add("active");
           }
-          current++;
-          updateInterface();
-          // focus first input on new step
-          const first = document.querySelector(
-            ".question-step.active input, .question-step.active button"
-          );
-          first?.focus();
-        } else {
-          // final submit
-          [
-            "nome",
-            "apelido",
-            "telefone",
-            "email",
-            "meio_contacto",
-            "horario_contacto",
-            "privacidade",
-          ].forEach(
-            (id) => (answers[id] = document.getElementById(id).value || "Sim")
-          );
-          document.getElementById("respostas").value = Object.entries(answers)
-            .map(([k, v]) => `${k}: ${v}`)
-            .join("\n");
-          document.getElementById("finalForm").submit();
-        }
-      });
 
-      // init
-      updateInterface();
+          // Atualiza a barra de progresso
+          const progress = (completedStepsCount / totalSteps) * 100;
+          progressFill.style.width = `${progress}%`;
+          progressText.textContent = `Progresso: ${completedStepsCount} de ${totalSteps} etapas completas`;
+
+          // Habilita o botão de envio se tudo estiver completo
+          submitBtn.disabled = completedStepsCount !== totalSteps;
+        };
+
+        /**
+         * Lida com mudanças nos inputs e aciona a atualização e o auto-scroll.
+         * @param {Event} e - O evento de input/change.
+         */
+        const handleInputChange = (e) => {
+          const currentStep = e.target.closest(".step");
+          updateFormState();
+
+          // Auto-scroll para a próxima etapa desbloqueada
+          if (isStepComplete(currentStep)) {
+            const nextStep = currentStep.nextElementSibling;
+            if (nextStep && nextStep.classList.contains("step")) {
+              clearTimeout(scrollTimeout);
+              scrollTimeout = setTimeout(() => {
+                // Rola para um ponto um pouco acima da próxima etapa
+                const headerOffset =
+                  document.querySelector(".progress-container").offsetHeight +
+                  20;
+                const elementPosition = nextStep.getBoundingClientRect().top;
+                const offsetPosition =
+                  elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                  top: offsetPosition,
+                  behavior: "smooth",
+                });
+              }, 400); // Delay para não ser muito abrupto
+            }
+          }
+        };
+
+        /**
+         * Lida com o envio do formulário via Fetch API.
+         */
+        const handleFormSubmit = async (e) => {
+          e.preventDefault();
+          if (submitBtn.disabled) return;
+
+          form.style.display = "none";
+          submitSection.style.display = "none";
+          loadingState.style.display = "block";
+          formContainer.scrollIntoView();
+
+          const formData = new FormData(form);
+          formData.append("_next", REDIRECT_URL);
+
+          try {
+            const response = await fetch(FORM_SUBMIT_URL, {
+              method: "POST",
+              body: formData,
+              headers: { Accept: "application/json" },
+            });
+            if (!response.ok) throw new Error("Network response failed");
+
+            loadingState.style.display = "none";
+            successMessage.style.display = "block";
+            setTimeout(() => {
+              window.location.href = REDIRECT_URL;
+            }, 2500);
+          } catch (error) {
+            console.error("Form submission error:", error);
+            loadingState.style.display = "none";
+            errorMessage.style.display = "block";
+            // Permite que o usuário tente novamente
+            setTimeout(() => {
+              errorMessage.style.display = "none";
+              form.style.display = "block";
+              submitSection.style.display = "block";
+              updateFormState();
+            }, 4000);
+          }
+        };
+
+        // --- INICIALIZAÇÃO ---
+        const init = () => {
+          form.addEventListener("input", handleInputChange);
+          form.addEventListener("submit", handleFormSubmit);
+          // Formatação especial para o CEP
+          const cepInput = document.getElementById("cep");
+          if (cepInput) {
+            cepInput.addEventListener("input", (e) => {
+              let value = e.target.value.replace(/\D/g, "");
+              if (value.length > 4) {
+                value = value.replace(/^(\d{4})(\d)/, "$1-$2");
+              }
+              e.target.value = value;
+            });
+          }
+          updateFormState(); // Define o estado inicial do formulário
+        };
+
+        init();
+      });
     </script>
   </body>
 </html>
