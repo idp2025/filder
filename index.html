@@ -1,996 +1,321 @@
+
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Simulador de Alarmes - GlobalEad</title>
+    <title>Formulário de Imóvel</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
 
     <style>
-      /* Definindo variáveis globais */
+      /* ------------------- */
+      /*  Configurações Gerais e Variáveis */
+      /* ------------------- */
       :root {
-        --primary-color-start: #2563eb;
-        --primary-color-end: #1d4ed8;
-        --success-color: #10b981;
-        --error-color: #f43f5e;
-        --locked-opacity: 0.4;
-        --text-color-dark: #1a202c;
-        --text-color-light: #6b7280;
-        --bg-color-main: #f8fafc;
-        --bg-color-card: white;
-        --border-color-light: #e5e7eb;
-        --font-family-main: "Inter", sans-serif;
-        --header-height: 106px;
+        --primary-blue: #5c95c9;
+        --dark-text: #0d3d56;
+        --light-text: #6c757d;
+        --border-color: #ced4da;
+        --background-color: #f4f7f6;
+        --white-color: #ffffff;
+        --font-family-main: "Roboto", sans-serif;
       }
 
-      /* Reset e Configurações Globais */
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
-      html {
-        scroll-behavior: smooth;
-      }
+
       body {
         font-family: var(--font-family-main);
-        background: var(--bg-color-main);
-        color: var(--text-color-dark);
+        background-color: var(--background-color);
+        color: var(--light-text);
         line-height: 1.6;
+        font-size: 16px;
       }
 
-      .container {
-        max-width: 600px;
-        margin: 0 auto;
-        background: var(--bg-color-card);
-        min-height: 100vh;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        position: relative;
-      }
-
-      /* Cabeçalho e Progresso (Sticky) */
-      .header {
-        background: linear-gradient(
-          135deg,
-          var(--primary-color-start),
-          var(--primary-color-end)
-        );
-        color: white;
-        padding: 30px 24px;
-        text-align: center;
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      }
-      .header h1 {
-        font-size: 1.8rem;
-        font-weight: 700;
-        margin-bottom: 8px;
-      }
-      .header p {
-        font-size: 0.95rem;
-        opacity: 0.9;
-      }
-
-      .progress-container {
-        background: var(--bg-color-card);
-        padding: 16px 24px;
-        border-bottom: 1px solid var(--border-color-light);
-        position: sticky;
-        top: var(--header-height);
-        z-index: 99;
-      }
-      .progress-bar {
-        width: 100%;
-        height: 6px;
-        background: var(--border-color-light);
-        border-radius: 3px;
-        overflow: hidden;
-      }
-      .progress-fill {
-        height: 100%;
-        background: linear-gradient(
-          135deg,
-          var(--primary-color-start),
-          var(--primary-color-end)
-        );
-        border-radius: 3px;
-        transition: width 0.4s ease;
-        width: 0%;
-      }
-      .progress-text {
-        text-align: center;
-        margin-top: 8px;
-        font-size: 0.85rem;
-        color: var(--text-color-light);
-        font-weight: 500;
-      }
-
-      /* Estilos do Formulário e Etapas */
-      .form-container {
-        padding: 24px;
-      }
-      .step {
-        margin-bottom: 48px;
-        padding: 24px;
-        border: 1px solid var(--border-color-light);
-        border-radius: 12px;
-        background: var(--bg-color-card);
-        transition: opacity 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
-      }
-
-      /* Estado "Bloqueado" para etapas futuras */
-      .step.locked {
-        opacity: var(--locked-opacity);
-        pointer-events: none;
-      }
-
-      /* Estado "Ativo" para a etapa atual */
-      .step.active {
-        opacity: 1;
-        border-color: var(--primary-color-start);
-        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.1);
-      }
-
-      .step-header {
-        display: flex;
-        align-items: center;
-        margin-bottom: 20px;
-        padding-bottom: 16px;
-        border-bottom: 2px solid #f3f4f6;
-      }
-      .step-number {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 36px;
-        height: 36px;
-        background: var(--primary-color-start);
-        color: white;
-        border-radius: 50%;
-        font-size: 14px;
-        font-weight: 600;
-        margin-right: 16px;
-        transition: all 0.3s ease;
-        flex-shrink: 0;
-      }
-      .step-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #1f2937;
-      }
-
-      /* Estado "Completo" para etapas preenchidas */
-      .step.completed .step-number {
-        background-color: var(--success-color);
-      }
-      .step.completed .step-number::after {
-        content: "✓";
-        font-weight: bold;
-      }
-
-      .options-list {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-      }
-      .option-item {
-        border: 2px solid var(--border-color-light);
+      /* ------------------- */
+      /*  Container Principal do Formulário */
+      /* ------------------- */
+      .form-wrapper {
+        max-width: 750px;
+        margin: 50px auto;
+        padding: 40px;
+        background-color: var(--white-color);
         border-radius: 8px;
-        padding: 16px 20px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        position: relative;
-      }
-      .option-item:hover {
-        border-color: var(--primary-color-start);
-        background: #f8fafc;
-      }
-      .option-item input[type="radio"] {
-        display: none;
-      }
-      .option-item:has(input[type="radio"]:checked) {
-        border-color: var(--primary-color-start);
-        background: #eff6ff;
-      }
-      .option-item:has(input[type="radio"]:checked)::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        width: 4px;
-        background: var(--primary-color-start);
-        border-radius: 0 4px 4px 0;
-      }
-      .option-content {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-      .option-text {
-        font-size: 1rem;
-        font-weight: 500;
-        color: #374151;
-      }
-      .check-icon {
-        width: 20px;
-        height: 20px;
-        border: 2px solid #d1d5db;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
-      }
-      .option-item:has(input[type="radio"]:checked) .check-icon {
-        border-color: var(--primary-color-start);
-        background: var(--primary-color-start);
-        color: white;
-      }
-      .option-item:has(input[type="radio"]:checked) .check-icon::before {
-        content: "✓";
-        font-size: 12px;
-        font-weight: bold;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
       }
 
+      /* ------------------- */
+      /*  Estilos de Seção e Títulos */
+      /* ------------------- */
       .form-section {
-        margin-top: 16px;
+        margin-bottom: 40px;
       }
-      .form-field {
-        margin-bottom: 16px;
-        position: relative;
+
+      .form-section:last-of-type {
+        margin-bottom: 0;
       }
-      .form-field label {
+
+      .section-title {
+        font-size: 1.5rem; /* 24px */
+        font-weight: 700;
+        color: var(--dark-text);
+        margin-bottom: 25px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e9ecef;
+      }
+
+      /* ------------------- */
+      /*  Estilos dos Campos (Inputs, Textarea) */
+      /* ------------------- */
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
         display: block;
-        margin-bottom: 6px;
+        margin-bottom: 8px;
         font-weight: 500;
-        color: #374151;
-        font-size: 0.95rem;
+        color: var(--dark-text);
       }
-      .form-field input,
-      .form-field select {
+
+      .form-input,
+      .form-textarea {
         width: 100%;
-        padding: 12px 16px;
-        border: 2px solid var(--border-color-light);
+        padding: 12px 15px;
+        border: 1px solid var(--border-color);
         border-radius: 6px;
         font-size: 1rem;
-        transition: all 0.3s ease;
-        background: var(--bg-color-card);
+        font-family: var(--font-family-main);
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
       }
-      .form-field input:focus-visible,
-      .form-field select:focus-visible {
+
+      .form-input::placeholder,
+      .form-textarea::placeholder {
+        color: #adb5bd;
+      }
+
+      .form-input:focus,
+      .form-textarea:focus {
         outline: none;
-        border-color: var(--primary-color-start);
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-      }
-      .form-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
+        border-color: var(--primary-blue);
+        box-shadow: 0 0 0 3px rgba(92, 149, 201, 0.2);
       }
 
-      /* Botão de Envio e Mensagens de Feedback */
-      .submit-section {
-        padding: 20px 24px;
-        border-top: 1px solid var(--border-color-light);
+      .form-textarea {
+        min-height: 120px;
+        resize: vertical;
       }
-      .submit-btn {
-        width: 100%;
-        padding: 16px;
-        font-size: 1rem;
-        background: linear-gradient(
-          135deg,
-          var(--primary-color-start),
-          var(--primary-color-end)
-        );
-        color: white;
-        border: none;
-        border-radius: 8px;
+
+      /* ------------------- */
+      /*  Estilos dos Checkboxes */
+      /* ------------------- */
+      .checkbox-group-label {
+        font-weight: 500;
+        color: var(--dark-text);
+        margin-bottom: 15px;
+        display: block;
+      }
+
+      .checkbox-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      .checkbox-item {
+        display: flex;
+        align-items: center;
         cursor: pointer;
-        font-weight: 600;
-        transition: all 0.3s ease;
-      }
-      .submit-btn:hover:not(:disabled) {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
-      }
-      .submit-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: none;
       }
 
-      .loading-state,
-      .success-message,
-      .error-message {
-        display: none;
+      .checkbox-item input[type="checkbox"] {
+        margin-right: 8px;
+        width: 1.1em;
+        height: 1.1em;
+        accent-color: var(--primary-blue);
+      }
+
+      /* ------------------- */
+      /*  Estilo do Botão */
+      /* ------------------- */
+      .submit-group {
         text-align: center;
-        padding: 40px 20px;
-      }
-      .spinner {
-        width: 32px;
-        height: 32px;
-        border: 3px solid var(--border-color-light);
-        border-top: 3px solid var(--primary-color-start);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin: 0 auto 16px;
-      }
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
+        margin-top: 30px;
       }
 
-      .success-message,
-      .error-message {
-        animation: fadeIn 0.5s;
-      }
-      .success-message {
-        color: #065f46;
-      }
-      .error-message {
-        color: #9f1239;
-      }
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 1;
-        }
+      .submit-btn {
+        padding: 12px 40px;
+        background-color: var(--primary-blue);
+        color: var(--white-color);
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
       }
 
+      .submit-btn:hover {
+        background-color: #4a80b0; /* Um tom mais escuro de azul */
+        transform: translateY(-2px);
+      }
+
+      /* ------------------- */
+      /*  Responsividade */
+      /* ------------------- */
       @media (max-width: 768px) {
-        .form-grid {
-          grid-template-columns: 1fr;
+        .form-wrapper {
+          margin: 20px;
+          padding: 25px;
+        }
+        .checkbox-container {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 15px;
         }
       }
     </style>
   </head>
   <body>
-    <div class="container">
-      <header class="header">
-        <h1>Simulador de Alarmes</h1>
-        <p>Encontre a solução de segurança ideal para você</p>
-      </header>
+    <div class="form-wrapper">
+      <form action="#" method="POST">
+        <!-- Seção: Informações Pessoais -->
+        <section class="form-section">
+          <h2 class="section-title">Informações Pessoais</h2>
 
-      <div class="progress-container">
-        <div class="progress-bar">
-          <div class="progress-fill" id="progressFill"></div>
-        </div>
-        <div class="progress-text" id="progressText"></div>
-      </div>
-
-      <div class="form-container" id="formContainer">
-        <div class="success-message" id="successMessage">
-          ✅<br />Formulário enviado com sucesso! Entraremos em contato em
-          breve.
-        </div>
-        <div class="error-message" id="errorMessage">
-          ❌<br />Ocorreu um erro ao enviar. Por favor, tente novamente.
-        </div>
-        <div class="loading-state" id="loadingState">
-          <div class="spinner"></div>
-          <p>Enviando suas informações...</p>
-        </div>
-
-        <form id="alarmForm" novalidate>
-          <!-- Os campos ocultos para o formsubmit.co permanecem -->
-          <input
-            type="hidden"
-            name="_subject"
-            value="Nova solicitação - Simulador de Alarmes"
-          />
-          <input type="hidden" name="_captcha" value="false" />
-
-          <!-- Os 'steps' agora são seções de uma lista -->
-          <div class="step" data-step="1">
-            <div class="step-header">
-              <div class="step-number">1</div>
-              <div class="step-title">O alarme é para casa ou empresa?</div>
-            </div>
-            <div class="options-list">
-              <label class="option-item"
-                ><input type="radio" name="tipo_imovel" value="Casa" required />
-                <div class="option-content">
-                  <span class="option-text">Casa</span>
-                  <div class="check-icon"></div></div
-              ></label>
-              <label class="option-item"
-                ><input
-                  type="radio"
-                  name="tipo_imovel"
-                  value="Empresa"
-                  required />
-                <div class="option-content">
-                  <span class="option-text">Empresa</span>
-                  <div class="check-icon"></div></div
-              ></label>
-            </div>
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-input"
+              name="nome"
+              placeholder="Nome"
+              required
+            />
           </div>
 
-          <div class="step" data-step="2">
-            <div class="step-header">
-              <div class="step-number">2</div>
-              <div class="step-title">Qual o tipo de propriedade?</div>
-            </div>
-            <div class="options-list">
-              <label class="option-item"
-                ><input
-                  type="radio"
-                  name="subtipo_imovel"
-                  value="Apartamento"
-                  required />
-                <div class="option-content">
-                  <span class="option-text">Apartamento</span>
-                  <div class="check-icon"></div></div
-              ></label>
-              <label class="option-item"
-                ><input
-                  type="radio"
-                  name="subtipo_imovel"
-                  value="Vivenda"
-                  required />
-                <div class="option-content">
-                  <span class="option-text">Vivenda</span>
-                  <div class="check-icon"></div></div
-              ></label>
-              <label class="option-item"
-                ><input
-                  type="radio"
-                  name="subtipo_imovel"
-                  value="Condomínio"
-                  required />
-                <div class="option-content">
-                  <span class="option-text">Condomínio</span>
-                  <div class="check-icon"></div></div
-              ></label>
-            </div>
+          <div class="form-group">
+            <input
+              type="email"
+              class="form-input"
+              name="email"
+              placeholder="Endereço de Email"
+              required
+            />
           </div>
 
-          <!-- Repita o padrão para todas as outras etapas -->
-          <div class="step" data-step="3">
-            <div class="step-header">
-              <div class="step-number">3</div>
-              <div class="step-title">Residência principal ou secundária?</div>
-            </div>
-            <div class="options-list">
-              <label class="option-item"
-                ><input
-                  type="radio"
-                  name="uso_residencia"
-                  value="Principal"
-                  required />
-                <div class="option-content">
-                  <span class="option-text">Principal</span>
-                  <div class="check-icon"></div></div
-              ></label>
-              <label class="option-item"
-                ><input
-                  type="radio"
-                  name="uso_residencia"
-                  value="Secundária"
-                  required />
-                <div class="option-content">
-                  <span class="option-text">Secundária</span>
-                  <div class="check-icon"></div></div
-              ></label>
-            </div>
+          <div class="form-group">
+            <input
+              type="tel"
+              class="form-input"
+              name="telefone"
+              placeholder="+351 912 345 678"
+              required
+            />
+          </div>
+        </section>
+
+        <!-- Seção: Caracterização do Imóvel -->
+        <section class="form-section">
+          <h2 class="section-title">Caracterização do Imóvel</h2>
+
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-input"
+              name="distrito"
+              placeholder="Distrito"
+            />
           </div>
 
-          <div class="step" data-step="4">
-            <div class="step-header">
-              <div class="step-number">4</div>
-              <div class="step-title">Localização da propriedade</div>
-            </div>
-            <div class="options-list">
-              <label class="option-item"
-                ><input
-                  type="radio"
-                  name="localizacao"
-                  value="Urbana"
-                  required />
-                <div class="option-content">
-                  <span class="option-text">Zona Urbana</span>
-                  <div class="check-icon"></div></div
-              ></label>
-              <label class="option-item"
-                ><input
-                  type="radio"
-                  name="localizacao"
-                  value="Rural"
-                  required />
-                <div class="option-content">
-                  <span class="option-text">Zona Rural</span>
-                  <div class="check-icon"></div></div
-              ></label>
-            </div>
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-input"
+              name="concelho"
+              placeholder="Concelho"
+            />
           </div>
 
-          <div class="step" data-step="5">
-            <div class="step-header">
-              <div class="step-number">5</div>
-              <div class="step-title">Acesso principal</div>
-            </div>
-            <div class="options-list">
-              <label class="option-item"
-                ><input
-                  type="radio"
-                  name="acesso_principal"
-                  value="Rua"
-                  required />
-                <div class="option-content">
-                  <span class="option-text">Direto da rua</span>
-                  <div class="check-icon"></div></div
-              ></label>
-              <label class="option-item"
-                ><input
-                  type="radio"
-                  name="acesso_principal"
-                  value="Sem vigilância"
-                  required />
-                <div class="option-content">
-                  <span class="option-text">Sem vigilância</span>
-                  <div class="check-icon"></div></div
-              ></label>
-              <label class="option-item"
-                ><input
-                  type="radio"
-                  name="acesso_principal"
-                  value="Com vigilância"
-                  required />
-                <div class="option-content">
-                  <span class="option-text">Com vigilância</span>
-                  <div class="check-icon"></div></div
-              ></label>
-            </div>
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-input"
+              name="freguesia"
+              placeholder="Freguesia"
+            />
           </div>
 
-          <div class="step" data-step="6">
-            <div class="step-header">
-              <div class="step-number">6</div>
-              <div class="step-title">Acesso secundário</div>
-            </div>
-            <div class="options-list">
-              <label class="option-item"
-                ><input
-                  type="radio"
-                  name="acesso_secundario"
-                  value="Jardim"
-                  required />
-                <div class="option-content">
-                  <span class="option-text">Jardim</span>
-                  <div class="check-icon"></div></div
-              ></label>
-              <label class="option-item"
-                ><input
-                  type="radio"
-                  name="acesso_secundario"
-                  value="Varanda"
-                  required />
-                <div class="option-content">
-                  <span class="option-text">Varanda</span>
-                  <div class="check-icon"></div></div
-              ></label>
-              <label class="option-item"
-                ><input
-                  type="radio"
-                  name="acesso_secundario"
-                  value="Não tem"
-                  required />
-                <div class="option-content">
-                  <span class="option-text">Não tem</span>
-                  <div class="check-icon"></div></div
-              ></label>
-            </div>
-          </div>
-
-          <div class="step" data-step="7">
-            <div class="step-header">
-              <div class="step-number">7</div>
-              <div class="step-title">As janelas possuem grades?</div>
-            </div>
-            <div class="options-list">
-              <label class="option-item"
-                ><input
-                  type="radio"
-                  name="janelas_com_grades"
-                  value="Sim"
-                  required />
-                <div class="option-content">
-                  <span class="option-text">Sim</span>
-                  <div class="check-icon"></div></div
-              ></label>
-              <label class="option-item"
-                ><input
-                  type="radio"
-                  name="janelas_com_grades"
-                  value="Não"
-                  required />
-                <div class="option-content">
-                  <span class="option-text">Não</span>
-                  <div class="check-icon"></div></div
-              ></label>
-              <label class="option-item"
-                ><input
-                  type="radio"
-                  name="janelas_com_grades"
-                  value="Algumas"
-                  required />
-                <div class="option-content">
-                  <span class="option-text">Algumas</span>
-                  <div class="check-icon"></div></div
-              ></label>
-            </div>
-          </div>
-
-          <div class="step" data-step="8">
-            <div class="step-header">
-              <div class="step-number">8</div>
-              <div class="step-title">Código postal da residência</div>
-            </div>
-            <div class="form-section">
-              <div class="form-field">
-                <label for="cep">Código Postal *</label>
+          <div class="form-group">
+            <label class="checkbox-group-label">Tipo*</label>
+            <div class="checkbox-container">
+              <label class="checkbox-item">
                 <input
-                  type="text"
-                  id="cep"
-                  name="cep"
-                  placeholder="0000-000"
-                  maxlength="8"
-                  required
+                  type="checkbox"
+                  name="tipo_imovel[]"
+                  value="Apartamento"
                 />
-              </div>
+                Apartamento
+              </label>
+              <label class="checkbox-item">
+                <input
+                  type="checkbox"
+                  name="tipo_imovel[]"
+                  value="Negócio/Comércio"
+                />
+                Negócio/Comércio
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" name="tipo_imovel[]" value="Moradias" />
+                Moradias
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" name="tipo_imovel[]" value="Quintas" />
+                Quintas
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" name="tipo_imovel[]" value="Terrenos" />
+                Terrenos
+              </label>
             </div>
           </div>
 
-          <div class="step" data-step="9">
-            <div class="step-header">
-              <div class="step-number">9</div>
-              <div class="step-title">Quanto tempo a casa fica vazia?</div>
-            </div>
-            <div class="options-list">
-              <label class="option-item"
-                ><input
-                  type="radio"
-                  name="tempo_casa_vazia"
-                  value="Sempre tem alguém"
-                  required />
-                <div class="option-content">
-                  <span class="option-text">Sempre tem alguém</span>
-                  <div class="check-icon"></div></div
-              ></label>
-              <label class="option-item"
-                ><input
-                  type="radio"
-                  name="tempo_casa_vazia"
-                  value="Menos de 2h"
-                  required />
-                <div class="option-content">
-                  <span class="option-text">Menos de 2 horas</span>
-                  <div class="check-icon"></div></div
-              ></label>
-              <label class="option-item"
-                ><input
-                  type="radio"
-                  name="tempo_casa_vazia"
-                  value="2-5h"
-                  required />
-                <div class="option-content">
-                  <span class="option-text">2 a 5 horas</span>
-                  <div class="check-icon"></div></div
-              ></label>
-              <label class="option-item"
-                ><input
-                  type="radio"
-                  name="tempo_casa_vazia"
-                  value="Mais de 5h"
-                  required />
-                <div class="option-content">
-                  <span class="option-text">Mais de 5 horas</span>
-                  <div class="check-icon"></div></div
-              ></label>
-            </div>
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-input"
+              name="tipologia"
+              placeholder="Tipologia"
+            />
           </div>
 
-          <div class="step" data-step="10">
-            <div class="step-header">
-              <div class="step-number">10</div>
-              <div class="step-title">
-                Já houve algum incidente de segurança?
-              </div>
-            </div>
-            <div class="options-list">
-              <label class="option-item"
-                ><input
-                  type="radio"
-                  name="historico_incidente"
-                  value="Sim"
-                  required />
-                <div class="option-content">
-                  <span class="option-text">Sim</span>
-                  <div class="check-icon"></div></div
-              ></label>
-              <label class="option-item"
-                ><input
-                  type="radio"
-                  name="historico_incidente"
-                  value="Não"
-                  required />
-                <div class="option-content">
-                  <span class="option-text">Não</span>
-                  <div class="check-icon"></div></div
-              ></label>
-              <label class="option-item"
-                ><input
-                  type="radio"
-                  name="historico_incidente"
-                  value="Na vizinhança"
-                  required />
-                <div class="option-content">
-                  <span class="option-text">Na vizinhança</span>
-                  <div class="check-icon"></div></div
-              ></label>
-            </div>
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-input"
+              name="area"
+              placeholder="Área"
+            />
           </div>
 
-          <div class="step" data-step="11">
-            <div class="step-header">
-              <div class="step-number">11</div>
-              <div class="step-title">Dados para contato</div>
-            </div>
-            <div class="form-section">
-              <div class="form-grid">
-                <div class="form-field">
-                  <label for="nome">Nome *</label
-                  ><input type="text" id="nome" name="nome" required />
-                </div>
-                <div class="form-field">
-                  <label for="apelido">Sobrenome *</label
-                  ><input type="text" id="apelido" name="apelido" required />
-                </div>
-              </div>
-              <div class="form-grid">
-                <div class="form-field">
-                  <label for="telefone">Telefone *</label
-                  ><input
-                    type="tel"
-                    id="telefone"
-                    name="telefone"
-                    placeholder="912 345 678"
-                    required
-                  />
-                </div>
-                <div class="form-field">
-                  <label for="email">Email *</label
-                  ><input type="email" id="email" name="email" required />
-                </div>
-              </div>
-              <div class="form-grid">
-                <div class="form-field">
-                  <label for="meio_contacto">Meio de contato preferido *</label
-                  ><select id="meio_contacto" name="meio_contacto" required>
-                    <option value="">Selecione</option>
-                    <option value="Email">Email</option>
-                    <option value="Telefone">Telefone</option>
-                    <option value="WhatsApp">WhatsApp</option>
-                  </select>
-                </div>
-                <div class="form-field">
-                  <label for="horario_contacto">Horário de contato *</label
-                  ><select
-                    id="horario_contacto"
-                    name="horario_contacto"
-                    required
-                  >
-                    <option value="">Selecione</option>
-                    <option value="9h–12h30">9h às 12h30</option>
-                    <option value="12h30–16h">12h30 às 16h</option>
-                    <option value="16h–19h30">16h às 19h30</option>
-                    <option value="Qualquer horário">Qualquer horário</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+          <div class="form-group">
+            <textarea
+              class="form-textarea"
+              name="mensagem"
+              placeholder="Gostaria de ser contacto/a por um mediador imobiliário especialista na minha área"
+            ></textarea>
           </div>
-        </form>
-      </div>
+        </section>
 
-      <div class="submit-section" id="submitSection">
-        <button
-          type="submit"
-          form="alarmForm"
-          class="submit-btn"
-          id="submitBtn"
-          disabled
-        >
-          Solicitar Orçamento
-        </button>
-      </div>
+        <div class="submit-group">
+          <button type="submit" class="submit-btn">ENVIAR</button>
+        </div>
+      </form>
     </div>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        // --- ELEMENTOS DO DOM ---
-        const form = document.getElementById("alarmForm");
-        const steps = Array.from(form.querySelectorAll(".step"));
-        const submitBtn = document.getElementById("submitBtn");
-        const progressFill = document.getElementById("progressFill");
-        const progressText = document.getElementById("progressText");
-        const formContainer = document.getElementById("formContainer");
-        const loadingState = document.getElementById("loadingState");
-        const successMessage = document.getElementById("successMessage");
-        const errorMessage = document.getElementById("errorMessage");
-        const submitSection = document.getElementById("submitSection");
-
-        // --- ESTADO E CONFIGURAÇÕES ---
-        const totalSteps = steps.length;
-        const FORM_SUBMIT_URL =
-          "https://formsubmit.co/globaleadgroup@gmail.com";
-        const REDIRECT_URL = "https://www.globalead.pt/obrigado";
-        let scrollTimeout;
-
-        // --- FUNÇÕES ---
-
-        /**
-         * Verifica se uma etapa específica está completa.
-         * @param {HTMLElement} stepElement - O elemento da etapa.
-         * @returns {boolean} - True se todos os campos obrigatórios estiverem preenchidos.
-         */
-        const isStepComplete = (stepElement) => {
-          const inputs = Array.from(stepElement.querySelectorAll("[required]"));
-          return inputs.every((input) => {
-            if (input.type === "radio") {
-              const radioGroup = stepElement.querySelectorAll(
-                `input[name="${input.name}"]`
-              );
-              return Array.from(radioGroup).some((radio) => radio.checked);
-            }
-            if (input.type === "checkbox") return input.checked;
-            return input.value.trim() !== "";
-          });
-        };
-
-        /**
-         * Atualiza a UI (bloqueio/desbloqueio, progresso, botão de envio).
-         */
-        const updateFormState = () => {
-          let completedStepsCount = 0;
-          let firstActiveStep = null;
-
-          steps.forEach((step, index) => {
-            const isComplete = isStepComplete(step);
-            const isLocked = index > 0 && !isStepComplete(steps[index - 1]);
-
-            step.classList.toggle("completed", isComplete);
-            step.classList.toggle("locked", isLocked);
-            step.classList.remove("active");
-
-            if (isComplete) {
-              completedStepsCount++;
-            }
-
-            if (!isLocked && !firstActiveStep) {
-              firstActiveStep = step;
-            }
-          });
-
-          if (firstActiveStep) {
-            firstActiveStep.classList.add("active");
-          }
-
-          // Atualiza a barra de progresso
-          const progress = (completedStepsCount / totalSteps) * 100;
-          progressFill.style.width = `${progress}%`;
-          progressText.textContent = `Progresso: ${completedStepsCount} de ${totalSteps} etapas completas`;
-
-          // Habilita o botão de envio se tudo estiver completo
-          submitBtn.disabled = completedStepsCount !== totalSteps;
-        };
-
-        /**
-         * Lida com mudanças nos inputs e aciona a atualização e o auto-scroll.
-         * @param {Event} e - O evento de input/change.
-         */
-        const handleInputChange = (e) => {
-          const currentStep = e.target.closest(".step");
-          updateFormState();
-
-          // Auto-scroll para a próxima etapa desbloqueada
-          if (isStepComplete(currentStep)) {
-            const nextStep = currentStep.nextElementSibling;
-            if (nextStep && nextStep.classList.contains("step")) {
-              clearTimeout(scrollTimeout);
-              scrollTimeout = setTimeout(() => {
-                // Rola para um ponto um pouco acima da próxima etapa
-                const headerOffset =
-                  document.querySelector(".progress-container").offsetHeight +
-                  20;
-                const elementPosition = nextStep.getBoundingClientRect().top;
-                const offsetPosition =
-                  elementPosition + window.pageYOffset - headerOffset;
-
-                window.scrollTo({
-                  top: offsetPosition,
-                  behavior: "smooth",
-                });
-              }, 400); // Delay para não ser muito abrupto
-            }
-          }
-        };
-
-        /**
-         * Lida com o envio do formulário via Fetch API.
-         */
-        const handleFormSubmit = async (e) => {
-          e.preventDefault();
-          if (submitBtn.disabled) return;
-
-          form.style.display = "none";
-          submitSection.style.display = "none";
-          loadingState.style.display = "block";
-          formContainer.scrollIntoView();
-
-          const formData = new FormData(form);
-          formData.append("_next", REDIRECT_URL);
-
-          try {
-            const response = await fetch(FORM_SUBMIT_URL, {
-              method: "POST",
-              body: formData,
-              headers: { Accept: "application/json" },
-            });
-            if (!response.ok) throw new Error("Network response failed");
-
-            loadingState.style.display = "none";
-            successMessage.style.display = "block";
-            setTimeout(() => {
-              window.location.href = REDIRECT_URL;
-            }, 2500);
-          } catch (error) {
-            console.error("Form submission error:", error);
-            loadingState.style.display = "none";
-            errorMessage.style.display = "block";
-            // Permite que o usuário tente novamente
-            setTimeout(() => {
-              errorMessage.style.display = "none";
-              form.style.display = "block";
-              submitSection.style.display = "block";
-              updateFormState();
-            }, 4000);
-          }
-        };
-
-        // --- INICIALIZAÇÃO ---
-        const init = () => {
-          form.addEventListener("input", handleInputChange);
-          form.addEventListener("submit", handleFormSubmit);
-          // Formatação especial para o CEP
-          const cepInput = document.getElementById("cep");
-          if (cepInput) {
-            cepInput.addEventListener("input", (e) => {
-              let value = e.target.value.replace(/\D/g, "");
-              if (value.length > 4) {
-                value = value.replace(/^(\d{4})(\d)/, "$1-$2");
-              }
-              e.target.value = value;
-            });
-          }
-          updateFormState(); // Define o estado inicial do formulário
-        };
-
-        init();
-      });
-    </script>
   </body>
 </html>
