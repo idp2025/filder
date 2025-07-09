@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Formulário de Segurança Personalizado</title>
+  <title>Formulário de Segurança Compacto</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   
   <style>
@@ -11,14 +11,12 @@
     /*  Variáveis de Estilo e Configurações Globais */
     /* ------------------- */
     :root {
-      --primary-accent-color: #4dbdca; /* Ciano da linha vertical */
-      --primary-btn-start: #3b82f6;
-      --primary-btn-end: #60a5fa;
+      --primary-color-start: #3b82f6;
+      --primary-color-end: #60a5fa;
       --dark-text: #111827;
       --medium-text: #374151;
       --light-text: #6b7280;
       --border-color: #d1d5db;
-      --section-bg-color: #f9fafb;
       --background-color: #f3f4f6;
       --white-color: #ffffff;
       --border-radius: 8px;
@@ -44,91 +42,73 @@
     /* ------------------- */
     .form-container {
       width: 100%;
-      max-width: 850px;
-      padding: 48px;
+      max-width: 750px; /* Reduzido para ser mais compacto */
+      padding: 40px;
       background-color: var(--white-color);
       border-radius: 12px;
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     }
     
     .form-title {
-      font-size: 2rem;
+      font-size: 1.75rem; /* Reduzido */
       font-weight: 700;
       color: var(--dark-text);
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: 32px;
     }
 
     /* ------------------- */
     /*  Seções do Formulário */
     /* ------------------- */
-    .form-section { margin-bottom: 40px; }
+    .form-section { margin-bottom: 32px; }
     .section-title {
-      font-size: 1.25rem;
+      font-size: 1.125rem; /* Reduzido */
       font-weight: 600;
       color: var(--dark-text);
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       padding-bottom: 8px;
       border-bottom: 1px solid #e5e7eb;
     }
 
     /* ------------------- */
-    /*  Campos de Texto */
+    /*  Estrutura dos Campos */
     /* ------------------- */
-    .form-group { margin-bottom: 20px; }
-    .form-input {
+    .form-group { margin-bottom: 24px; }
+    
+    .question-label {
+      display: block;
+      font-weight: 500;
+      color: var(--medium-text);
+      margin-bottom: 12px; /* Espaço entre a pergunta e as opções */
+    }
+    .question-label span { color: #ef4444; }
+
+    .form-input,
+    .form-textarea {
       width: 100%;
-      padding: 14px 16px;
+      padding: 12px 14px; /* Padding reduzido */
       border: 1px solid var(--border-color);
       border-radius: var(--border-radius);
       font-size: 1rem;
       font-family: var(--font-family-main);
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
-    .form-input::placeholder { color: #9ca3af; }
-    .form-input:focus {
+    .form-input::placeholder,
+    .form-textarea::placeholder { color: #9ca3af; }
+    .form-input:focus,
+    .form-textarea:focus {
       outline: none;
-      border-color: var(--primary-accent-color);
-      box-shadow: 0 0 0 3px rgba(77, 189, 202, 0.2);
+      border-color: var(--primary-color-start);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
     }
     
     /* ------------------- */
-    /*  Seção de Perguntas (Design Especial) */
+    /*  Checklist/Rádios */
     /* ------------------- */
-    .question-row {
-      position: relative; /* Essencial para a linha vertical */
-      display: grid;
-      grid-template-columns: 2fr 3fr;
-      gap: 24px;
-      align-items: center;
-      padding: 20px 0 20px 24px; /* Espaço à esquerda para a linha */
-      border-bottom: 1px solid #e5e7eb;
-    }
-    .question-row:last-of-type { border-bottom: none; }
-    
-    /* A MÁGICA DA LINHA VERTICAL */
-    .question-row::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 5px;
-      height: 70%;
-      background-color: var(--primary-accent-color);
-      border-radius: 3px;
-    }
-
-    .question-label {
-      font-weight: 600; /* Um pouco mais forte para destaque */
-      color: var(--dark-text);
-    }
-    .question-label span { color: #ef4444; }
-
     .options-container {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px 24px;
+      gap: 10px 20px; /* Gap reduzido */
     }
     .option-item {
       display: flex;
@@ -139,38 +119,21 @@
       margin-right: 8px;
       width: 1.1em;
       height: 1.1em;
-      accent-color: var(--primary-accent-color);
+      accent-color: var(--primary-color-start);
     }
 
     /* ------------------- */
     /*  Textarea e Botão */
     /* ------------------- */
-    .form-textarea {
-      min-height: 120px;
-      resize: vertical;
-      /* Usa o mesmo estilo do .form-input */
-      width: 100%;
-      padding: 14px 16px;
-      border: 1px solid var(--border-color);
-      border-radius: var(--border-radius);
-      font-size: 1rem;
-      font-family: var(--font-family-main);
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-    .form-textarea:focus {
-      outline: none;
-      border-color: var(--primary-accent-color);
-      box-shadow: 0 0 0 3px rgba(77, 189, 202, 0.2);
-    }
-
-    .submit-group { text-align: center; margin-top: 40px; }
+    .form-textarea { min-height: 100px; resize: vertical; }
+    .submit-group { text-align: center; margin-top: 32px; }
     .submit-btn {
-      padding: 16px 48px;
-      background-image: linear-gradient(to right, var(--primary-btn-start), var(--primary-btn-end));
+      padding: 14px 40px; /* Padding reduzido */
+      background-image: linear-gradient(to right, var(--primary-color-start), var(--primary-color-end));
       color: var(--white-color);
       border: none;
       border-radius: var(--border-radius);
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
       text-transform: uppercase;
@@ -188,14 +151,11 @@
     @media (max-width: 768px) {
       body { padding: 20px 10px; }
       .form-container { padding: 24px; }
-      .form-title { font-size: 1.75rem; }
-      .question-row {
-        grid-template-columns: 1fr; /* Coluna única em telas pequenas */
+      .form-title { font-size: 1.5rem; }
+      .options-container {
+        flex-direction: column;
+        align-items: flex-start;
         gap: 12px;
-        padding: 16px 0 16px 20px;
-      }
-      .question-row::before {
-        height: 80%;
       }
     }
   </style>
@@ -223,98 +183,95 @@
       <!-- Seção: Questionário de Segurança -->
       <section class="form-section">
         <h2 class="section-title">Questionário de Segurança</h2>
-          
-        <div class="question-row">
-            <label class="question-label">O alarme é para casa ou empresa?<span>*</span></label>
-            <div class="options-container">
-              <label class="option-item"><input type="radio" name="tipo_imovel" value="Casa" required> Casa</label>
-              <label class="option-item"><input type="radio" name="tipo_imovel" value="Empresa"> Empresa</label>
-            </div>
+        
+        <div class="form-group">
+          <label class="question-label">O alarme é para casa ou empresa?<span>*</span></label>
+          <div class="options-container">
+            <label class="option-item"><input type="radio" name="tipo_imovel" value="Casa" required> Casa</label>
+            <label class="option-item"><input type="radio" name="tipo_imovel" value="Empresa"> Empresa</label>
+          </div>
         </div>
-          
-        <div class="question-row">
-            <label class="question-label">Qual o tipo de casa que tem?<span>*</span></label>
-            <div class="options-container">
-              <label class="option-item"><input type="radio" name="subtipo_imovel" value="Apartamento" required> Apartamento</label>
-              <label class="option-item"><input type="radio" name="subtipo_imovel" value="Vivenda"> Vivenda</label>
-            </div>
-        </div>
-
-        <div class="question-row">
-            <label class="question-label">É a sua residência principal ou secundária?<span>*</span></label>
-            <div class="options-container">
-              <label class="option-item"><input type="radio" name="uso_residencia" value="Principal" required> Principal</label>
-              <label class="option-item"><input type="radio" name="uso_residencia" value="Secundária"> Secundária</label>
-            </div>
-        </div>
-          
-        <div class="question-row">
-            <label class="question-label">Em que zona se localiza a sua casa?<span>*</span></label>
-            <div class="options-container">
-              <label class="option-item"><input type="radio" name="localizacao" value="Urbana" required> Dentro da zona urbana</label>
-              <label class="option-item"><input type="radio" name="localizacao" value="Rural"> Fora da zona urbana</label>
-            </div>
-        </div>
-          
-        <div class="question-row">
-            <label class="question-label">Como é o acesso principal da sua casa?<span>*</span></label>
-            <div class="options-container">
-              <label class="option-item"><input type="radio" name="acesso_principal" value="Rua" required> Entrada através da rua</label>
-              <label class="option-item"><input type="radio" name="acesso_principal" value="Condominio sem vigilancia"> Condomínio sem vigilância</label>
-              <label class="option-item"><input type="radio" name="acesso_principal" value="Condominio com vigilancia"> Condomínio com vigilância</label>
-            </div>
+        
+        <div class="form-group">
+          <label class="question-label">Qual o tipo de casa que tem?<span>*</span></label>
+          <div class="options-container">
+            <label class="option-item"><input type="radio" name="subtipo_imovel" value="Apartamento" required> Apartamento</label>
+            <label class="option-item"><input type="radio" name="subtipo_imovel" value="Vivenda"> Vivenda</label>
+          </div>
         </div>
 
-        <div class="question-row">
-            <label class="question-label">A sua casa tem algum acesso secundário?<span>*</span></label>
-            <div class="options-container">
-              <label class="option-item"><input type="radio" name="acesso_secundario" value="Jardim" required> Jardim ou terraço</label>
-              <label class="option-item"><input type="radio" name="acesso_secundario" value="Varanda"> Varanda/terraço</label>
-              <label class="option-item"><input type="radio" name="acesso_secundario" value="Nao tem"> Não tem</label>
-            </div>
+        <div class="form-group">
+          <label class="question-label">É a sua residência principal ou secundária?<span>*</span></label>
+          <div class="options-container">
+            <label class="option-item"><input type="radio" name="uso_residencia" value="Principal" required> Principal</label>
+            <label class="option-item"><input type="radio" name="uso_residencia" value="Secundária"> Secundária</label>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="question-label">Em que zona se localiza a sua casa?<span>*</span></label>
+          <div class="options-container">
+            <label class="option-item"><input type="radio" name="localizacao" value="Urbana" required> Dentro da zona urbana</label>
+            <label class="option-item"><input type="radio" name="localizacao" value="Rural"> Fora da zona urbana</label>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="question-label">Como é o acesso principal da sua casa?<span>*</span></label>
+          <div class="options-container">
+            <label class="option-item"><input type="radio" name="acesso_principal" value="Rua" required> Entrada através da rua</label>
+            <label class="option-item"><input type="radio" name="acesso_principal" value="Condominio sem vigilancia"> Condomínio sem vigilância</label>
+            <label class="option-item"><input type="radio" name="acesso_principal" value="Condominio com vigilancia"> Condomínio com vigilância</label>
+          </div>
         </div>
 
-        <div class="question-row">
-            <label class="question-label">As janelas da sua habitação têm grades?<span>*</span></label>
-            <div class="options-container">
-              <label class="option-item"><input type="radio" name="grades_janelas" value="Sim" required> Sim</label>
-              <label class="option-item"><input type="radio" name="grades_janelas" value="Nao"> Não</label>
-            </div>
+        <div class="form-group">
+          <label class="question-label">A sua casa tem algum acesso secundário?<span>*</span></label>
+          <div class="options-container">
+            <label class="option-item"><input type="radio" name="acesso_secundario" value="Jardim" required> Jardim ou terraço</label>
+            <label class="option-item"><input type="radio" name="acesso_secundario" value="Varanda"> Varanda/terraço</label>
+            <label class="option-item"><input type="radio" name="acesso_secundario" value="Nao tem"> Não tem</label>
+          </div>
         </div>
 
-        <div class="question-row">
-            <label class="question-label" for="codigo_postal">Código Postal<span>*</span></label>
-            <div class="options-container">
-               <input type="text" id="codigo_postal" class="form-input" name="codigo_postal" placeholder="Ex: 4675-039" required>
-            </div>
+        <div class="form-group">
+          <label class="question-label">As janelas da sua habitação têm grades?<span>*</span></label>
+          <div class="options-container">
+            <label class="option-item"><input type="radio" name="grades_janelas" value="Sim" required> Sim</label>
+            <label class="option-item"><input type="radio" name="grades_janelas" value="Nao"> Não</label>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="question-label" for="codigo_postal">Código Postal<span>*</span></label>
+          <input type="text" id="codigo_postal" class="form-input" name="codigo_postal" placeholder="Ex: 4675-039" required>
         </div>
 
-        <div class="question-row">
-            <label class="question-label">Quanto tempo está a sua casa sem ninguém?<span>*</span></label>
-            <div class="options-container">
-              <label class="option-item"><input type="radio" name="tempo_casa_vazia" value="Sempre alguem" required> Há sempre alguém</label>
-              <label class="option-item"><input type="radio" name="tempo_casa_vazia" value="Menos de 2h"> Menos de 2 horas</label>
-              <label class="option-item"><input type="radio" name="tempo_casa_vazia" value="2-5h"> 2-5 horas</label>
-              <label class="option-item"><input type="radio" name="tempo_casa_vazia" value="Mais de 5h"> Mais de 5 horas</label>
-            </div>
+        <div class="form-group">
+          <label class="question-label">Quanto tempo está a sua casa sem ninguém?<span>*</span></label>
+          <div class="options-container">
+            <label class="option-item"><input type="radio" name="tempo_casa_vazia" value="Sempre alguem" required> Há sempre alguém</label>
+            <label class="option-item"><input type="radio" name="tempo_casa_vazia" value="Menos de 2h"> Menos de 2 horas</label>
+            <label class="option-item"><input type="radio" name="tempo_casa_vazia" value="2-5h"> 2-5 horas</label>
+            <label class="option-item"><input type="radio" name="tempo_casa_vazia" value="Mais de 5h"> Mais de 5 horas</label>
+          </div>
         </div>
 
-        <div class="question-row">
-            <label class="question-label">Já houve assalto na sua casa ou vizinhança?<span>*</span></label>
-            <div class="options-container">
-              <label class="option-item"><input type="radio" name="historico_assalto" value="Sim" required> Sim</label>
-              <label class="option-item"><input type="radio" name="historico_assalto" value="Nao"> Não</label>
-            </div>
+        <div class="form-group">
+          <label class="question-label">Já houve assalto na sua casa ou vizinhança?<span>*</span></label>
+          <div class="options-container">
+            <label class="option-item"><input type="radio" name="historico_assalto" value="Sim" required> Sim</label>
+            <label class="option-item"><input type="radio" name="historico_assalto" value="Nao"> Não</label>
+          </div>
         </div>
-          
       </section>
 
       <!-- Seção: Mensagem Adicional -->
       <section class="form-section">
-          <h2 class="section-title">Observações</h2>
-          <div class="form-group">
-            <textarea class="form-textarea" name="mensagem" placeholder="Deixe aqui qualquer informação adicional que considere relevante..."></textarea>
-          </div>
+        <h2 class="section-title">Observações</h2>
+        <div class="form-group">
+          <textarea class="form-textarea" name="mensagem" placeholder="Deixe aqui qualquer informação adicional que considere relevante..."></textarea>
+        </div>
       </section>
 
       <div class="submit-group">
