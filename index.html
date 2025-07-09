@@ -1,41 +1,26 @@
-Com certeza! Você deseja voltar ao layout anterior. Recriei o formulário para corresponder exatamente à imagem que você forneceu, com um design limpo e dividido em seções.
 
-Este código está todo em um único arquivo index.html para facilitar o uso.
-
-Destaques do Layout:
-
-Design Fiel: O estilo visual, cores, fontes, bordas e o botão foram feitos para serem idênticos ao design da imagem.
-
-Estrutura Clara: O formulário é dividido em "Informações Pessoais" e "Caracterização do Imóvel", facilitando o preenchimento.
-
-Campos Adequados: Utiliza os tipos de campo corretos, incluindo checkboxes para múltipla escolha e uma área de texto.
-
-Responsivo: O layout se ajusta para funcionar bem em telas de telemóveis.
-
-Copie e cole o código abaixo em um arquivo index.html.
-
-Generated html
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Formulário de Imóvel</title>
-  <!-- Usando a fonte Roboto, que é visualmente similar e moderna -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <title>Simulador de Alarme</title>
+  <!-- Usando a fonte Lato, que é visualmente similar e funciona bem -->
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet" />
   
   <style>
     /* ------------------- */
-    /*  Configurações Gerais e Variáveis */
+    /*  Variáveis de Estilo e Configurações Globais */
     /* ------------------- */
     :root {
-      --primary-blue: #5c95c9;
-      --dark-text: #0d3d56;
-      --light-text: #6c757d;
-      --border-color: #ced4da;
-      --background-color: #f4f7f6;
+      --primary-cyan: #4dbdca;
+      --primary-blue-btn: #3c8dbc;
+      --dark-text: #333;
+      --light-text: #666;
+      --border-color: #ddd;
+      --bg-color: #f4f4f4;
       --white-color: #ffffff;
-      --font-family-main: 'Roboto', sans-serif;
+      --font-family-main: 'Lato', sans-serif;
     }
 
     * {
@@ -46,239 +31,319 @@ Generated html
 
     body {
       font-family: var(--font-family-main);
-      background-color: var(--background-color);
+      background-color: var(--bg-color);
       color: var(--light-text);
-      line-height: 1.6;
-      font-size: 16px;
+      line-height: 1.5;
+      font-size: 14px;
       display: flex;
       justify-content: center;
-      align-items: center;
-      min-height: 100vh;
+      align-items: flex-start;
       padding: 20px;
     }
-
+    
     /* ------------------- */
     /*  Container Principal do Formulário */
     /* ------------------- */
-    .form-wrapper {
+    .form-container {
       width: 100%;
-      max-width: 750px;
-      padding: 40px;
+      max-width: 900px;
+      margin-top: 20px;
+      margin-bottom: 20px;
       background-color: var(--white-color);
-      border-radius: 8px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      border-radius: 4px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-top: 5px solid var(--primary-cyan);
+      overflow: hidden;
     }
 
     /* ------------------- */
-    /*  Estilos de Seção e Títulos */
+    /*  Barra de Ferramentas (Cabeçalho) */
     /* ------------------- */
-    .form-section {
-      margin-bottom: 40px;
+    .form-toolbar {
+      background-color: #3c8dbc;
+      color: var(--white-color);
+      padding: 8px 15px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
     }
-
-    .form-section:last-of-type {
-      margin-bottom: 0;
+    .form-toolbar-icon {
+      font-size: 1rem; /* Tamanho dos ícones */
+      cursor: pointer;
+    }
+    
+    /* ------------------- */
+    /*  Conteúdo do Formulário */
+    /* ------------------- */
+    .form-content {
+      padding: 30px;
     }
 
     .section-title {
-      font-size: 1.5rem; /* 24px */
+      font-size: 1.5rem; /* ~22px */
       font-weight: 700;
       color: var(--dark-text);
       margin-bottom: 25px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #e9ecef;
     }
-
+    
     /* ------------------- */
-    /*  Estilos dos Campos (Inputs, Textarea) */
+    /*  Inputs de Texto (Nome, Email, etc.) */
     /* ------------------- */
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    .form-input,
-    .form-textarea {
-      width: 100%;
-      padding: 12px 15px;
+    .personal-info-group {
+      margin-bottom: 25px;
       border: 1px solid var(--border-color);
-      border-radius: 6px;
+      border-radius: 4px;
+    }
+    
+    .text-input {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-bottom: 1px solid var(--border-color);
       font-size: 1rem;
       font-family: var(--font-family-main);
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
-      color: #333; /* Cor do texto digitado */
+      transition: border-color 0.3s ease;
+      background: none;
+    }
+    
+    .text-input:last-child {
+      border-bottom: none;
     }
 
-    .form-input::placeholder,
-    .form-textarea::placeholder {
-      color: #adb5bd;
-    }
-
-    .form-input:focus,
-    .form-textarea:focus {
+    .text-input:focus {
       outline: none;
-      border-color: var(--primary-blue);
-      box-shadow: 0 0 0 3px rgba(92, 149, 201, 0.2);
+      box-shadow: inset 0 0 0 2px var(--primary-cyan);
+    }
+    
+    /* ------------------- */
+    /*  Perguntas em Linha (Flexbox) */
+    /* ------------------- */
+    .questions-group {
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
     }
 
-    .form-textarea {
-      min-height: 120px;
-      resize: vertical;
+    .question-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 10px;
+      border-bottom: 1px solid #f0f0f0;
+      gap: 20px; /* Espaçamento entre a pergunta e as opções */
     }
-
-    /* ------------------- */
-    /*  Estilos dos Checkboxes */
-    /* ------------------- */
-    .checkbox-group-label {
-      font-weight: 500;
+    
+    .questions-group .question-row:last-child {
+      border-bottom: none;
+    }
+    
+    .question-label {
+      flex: 1; /* Ocupa o espaço disponível */
+      min-width: 250px; /* Garante que o texto não quebre muito cedo */
+      font-weight: 700;
       color: var(--dark-text);
-      margin-bottom: 15px;
-      display: block;
     }
-
-    .checkbox-group-label span {
-      color: #dc3545; /* Cor vermelha para o asterisco */
-    }
-
-    .checkbox-container {
+    
+    .options-container {
+      flex: 2; /* Ocupa mais espaço que a pergunta */
       display: flex;
       flex-wrap: wrap;
       gap: 20px;
+      align-items: center;
     }
-
-    .checkbox-item {
+    
+    .option-item {
       display: flex;
       align-items: center;
       cursor: pointer;
-      color: #495057; /* Cor do texto das opções */
+    }
+    
+    .option-item input {
+      margin-right: 6px;
+      width: 1em;
+      height: 1em;
+      accent-color: var(--primary-cyan);
+    }
+    
+    /* ------------------- */
+    /*  Textarea e Botão de Envio */
+    /* ------------------- */
+    .textarea-group {
+      margin-top: 25px;
+    }
+    
+    .form-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      resize: vertical;
+      font-size: 1rem;
+      font-family: var(--font-family-main);
     }
 
-    .checkbox-item input[type="checkbox"] {
-      margin-right: 8px;
-      width: 1.1em;
-      height: 1.1em;
-      accent-color: var(--primary-blue);
-    }
-
-    /* ------------------- */
-    /*  Estilo do Botão */
-    /* ------------------- */
     .submit-group {
-      text-align: center;
+      text-align: right;
       margin-top: 30px;
     }
-
+    
     .submit-btn {
-      padding: 12px 40px;
-      background-color: var(--primary-blue);
+      padding: 10px 25px;
+      background-color: var(--primary-blue-btn);
       color: var(--white-color);
       border: none;
-      border-radius: 6px;
+      border-radius: 4px;
       font-size: 1rem;
-      font-weight: 500;
+      font-weight: 700;
       cursor: pointer;
-      text-transform: uppercase;
-      transition: background-color 0.3s ease, transform 0.2s ease;
+      transition: background-color 0.3s ease;
     }
-
+    
     .submit-btn:hover {
-      background-color: #4a80b0; /* Um tom mais escuro de azul */
-      transform: translateY(-2px);
+      background-color: #367fa9; /* Tom mais escuro */
     }
 
     /* ------------------- */
     /*  Responsividade */
     /* ------------------- */
     @media (max-width: 768px) {
-      body {
-        padding: 10px;
-      }
-      .form-wrapper {
-        padding: 25px;
-      }
-      .checkbox-container {
+      body { padding: 10px; }
+      .form-container { margin-top: 10px; margin-bottom: 10px; }
+      .form-content { padding: 15px; }
+      .question-row {
         flex-direction: column;
         align-items: flex-start;
+        gap: 10px;
+      }
+      .question-label {
+        min-width: auto;
+        margin-bottom: 5px;
+      }
+      .options-container {
         gap: 15px;
+        width: 100%;
+      }
+      .submit-group {
+        text-align: center;
       }
     }
   </style>
 </head>
 <body>
 
-  <div class="form-wrapper">
-    <form action="#" method="POST">
-      <!-- Seção: Informações Pessoais -->
-      <section class="form-section">
+  <div class="form-container">
+    <div class="form-toolbar">
+      <!-- Ícones Unicode para simplicidade -->
+      <span class="form-toolbar-icon" title="Configurações">⚙️</span>
+      <span class="form-toolbar-icon" title="Ferramentas">🔧</span>
+      <span class="form-toolbar-icon" title="Menu">☰</span>
+      <span class="form-toolbar-icon" title="Fechar" style="margin-left: auto;">✕</span>
+    </div>
+    
+    <div class="form-content">
+      <form action="#" method="POST">
         <h2 class="section-title">Informações Pessoais</h2>
         
-        <div class="form-group">
-          <input type="text" class="form-input" name="nome" placeholder="Nome" required>
-        </div>
-        
-        <div class="form-group">
-          <input type="email" class="form-input" name="email" placeholder="Endereço de Email" required>
+        <div class="personal-info-group">
+          <input type="text" class="text-input" name="nome" placeholder="Nome" required>
+          <input type="email" class="text-input" name="email" placeholder="Email" required>
+          <input type="tel" class="text-input" name="telefone" placeholder="+351960120032" required>
         </div>
 
-        <div class="form-group">
-          <input type="tel" class="form-input" name="telefone" placeholder="+351960120032" required>
-        </div>
-      </section>
+        <div class="questions-group">
+          <div class="question-row">
+            <label class="question-label">O alarme é para casa ou empresa?*</label>
+            <div class="options-container">
+              <label class="option-item"><input type="radio" name="tipo_imovel" value="Casa" required> Casa</label>
+              <label class="option-item"><input type="radio" name="tipo_imovel" value="Empresa"> Empresa</label>
+            </div>
+          </div>
+          
+          <div class="question-row">
+            <label class="question-label">Qual o tipo de casa que tem?*</label>
+            <div class="options-container">
+              <label class="option-item"><input type="radio" name="subtipo_imovel" value="Apartamento" required> Apartamento</label>
+              <label class="option-item"><input type="radio" name="subtipo_imovel" value="Vivenda"> Vivenda</label>
+            </div>
+          </div>
 
-      <!-- Seção: Caracterização do Imóvel -->
-      <section class="form-section">
-        <h2 class="section-title">Caracterização do Imóvel</h2>
-        
-        <div class="form-group">
-          <input type="text" class="form-input" name="distrito" placeholder="Distrito">
-        </div>
+          <div class="question-row">
+            <label class="question-label">É a sua residência principal ou secundária?*</label>
+            <div class="options-container">
+              <label class="option-item"><input type="radio" name="uso_residencia" value="Principal" required> Principal</label>
+              <label class="option-item"><input type="radio" name="uso_residencia" value="Secundária"> Secundária</label>
+            </div>
+          </div>
+          
+          <div class="question-row">
+            <label class="question-label">Em que zona se localiza a sua casa?*</label>
+            <div class="options-container">
+              <label class="option-item"><input type="radio" name="localizacao" value="Urbana" required> Dentro da zona urbana</label>
+              <label class="option-item"><input type="radio" name="localizacao" value="Rural"> Fora da zona urbana</label>
+            </div>
+          </div>
+          
+          <div class="question-row">
+            <label class="question-label">Como é o acesso principal da sua casa?*</label>
+            <div class="options-container">
+              <label class="option-item"><input type="radio" name="acesso_principal" value="Rua" required> Entrada através da rua</label>
+              <label class="option-item"><input type="radio" name="acesso_principal" value="Condominio sem vigilancia"> Condomínio sem vigilância</label>
+              <label class="option-item"><input type="radio" name="acesso_principal" value="Condominio com vigilancia"> Condomínio com vigilância</label>
+            </div>
+          </div>
 
-        <div class="form-group">
-          <input type="text" class="form-input" name="concelho" placeholder="Concelho">
-        </div>
+          <div class="question-row">
+            <label class="question-label">A sua casa tem algum acesso secundário?*</label>
+            <div class="options-container">
+              <label class="option-item"><input type="radio" name="acesso_secundario" value="Jardim" required> Jardim ou terraço</label>
+              <label class="option-item"><input type="radio" name="acesso_secundario" value="Varanda"> Varanda/terraço</label>
+              <label class="option-item"><input type="radio" name="acesso_secundario" value="Nao tem"> Não tem</label>
+            </div>
+          </div>
 
-        <div class="form-group">
-          <input type="text" class="form-input" name="freguesia" placeholder="Freguesia">
-        </div>
+          <div class="question-row">
+            <label class="question-label">As janelas da sua habitação têm grades?*</label>
+            <div class="options-container">
+              <label class="option-item"><input type="radio" name="grades_janelas" value="Sim" required> Sim</label>
+              <label class="option-item"><input type="radio" name="grades_janelas" value="Nao"> Não</label>
+            </div>
+          </div>
 
-        <div class="form-group">
-          <label class="checkbox-group-label">Tipo<span>*</span></label>
-          <div class="checkbox-container">
-            <label class="checkbox-item">
-              <input type="checkbox" name="tipo_imovel[]" value="Apartamento"> Apartamento
-            </label>
-            <label class="checkbox-item">
-              <input type="checkbox" name="tipo_imovel[]" value="Negócio/Comércio"> Negócio/Comércio
-            </label>
-            <label class="checkbox-item">
-              <input type="checkbox" name="tipo_imovel[]" value="Moradias"> Moradias
-            </label>
-            <label class="checkbox-item">
-              <input type="checkbox" name="tipo_imovel[]" value="Quintas"> Quintas
-            </label>
-            <label class="checkbox-item">
-              <input type="checkbox" name="tipo_imovel[]" value="Terrenos"> Terrenos
-            </label>
+          <div class="question-row">
+            <label for="codigo_postal" class="question-label">Código Postal*</label>
+            <div class="options-container">
+               <input type="text" id="codigo_postal" class="text-input" name="codigo_postal" placeholder="4675-039" required style="border-radius: 4px;">
+            </div>
+          </div>
+
+          <div class="question-row">
+            <label class="question-label">Quanto tempo está a sua casa sem ninguém?*</label>
+            <div class="options-container">
+              <label class="option-item"><input type="radio" name="tempo_casa_vazia" value="Sempre alguem" required> Há sempre alguém</label>
+              <label class="option-item"><input type="radio" name="tempo_casa_vazia" value="Menos de 2h"> Menos de 2 horas</label>
+              <label class="option-item"><input type="radio" name="tempo_casa_vazia" value="2-5h"> 2-5 horas</label>
+              <label class="option-item"><input type="radio" name="tempo_casa_vazia" value="Mais de 5h"> Mais de 5 horas</label>
+            </div>
+          </div>
+
+          <div class="question-row">
+            <label class="question-label">Já houve assalto na sua casa ou vizinhança?*</label>
+            <div class="options-container">
+              <label class="option-item"><input type="radio" name="historico_assalto" value="Sim" required> Sim</label>
+              <label class="option-item"><input type="radio" name="historico_assalto" value="Nao"> Não</label>
+            </div>
           </div>
         </div>
 
-        <div class="form-group">
-          <input type="text" class="form-input" name="tipologia" placeholder="Tipologia">
-        </div>
-
-        <div class="form-group">
-          <input type="text" class="form-input" name="area" placeholder="Área">
-        </div>
-
-        <div class="form-group">
+        <div class="textarea-group">
           <textarea class="form-textarea" name="mensagem" placeholder="Gostaria de ser contacto/a por um mediador imobiliário especialista na minha área"></textarea>
         </div>
-      </section>
 
-      <div class="submit-group">
-        <button type="submit" class="submit-btn">Enviar</button>
-      </div>
-
-    </form>
+        <div class="submit-group">
+          <button type="submit" class="submit-btn">ENVIAR</button>
+        </div>
+      </form>
+    </div>
   </div>
 
 </body>
